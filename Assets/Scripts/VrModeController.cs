@@ -19,6 +19,7 @@
 using System.Collections;
 using Google.XR.Cardboard;
 using UnityEngine;
+using UnityEngine.Rendering;
 using UnityEngine.XR;
 using UnityEngine.XR.Management;
 
@@ -86,6 +87,8 @@ public class VrModeController : MonoBehaviour
     /// </summary>
     public void Update()
     {
+        if (SystemInfo.graphicsDeviceType != GraphicsDeviceType.OpenGLES3) return;
+
         if (_isVrModeEnabled)
         {
             if (Api.IsCloseButtonPressed)
