@@ -36,6 +36,14 @@ public class VrModeController : MonoBehaviour
 	// Main camera from the scene.
 	private Camera _mainCamera;
 
+	// Mouse movement for PC Users
+	public float MouseSensitivity = 2.0f;
+	private float MouseX = 0.0f, MouseY = 0.0f;
+
+	// Movement properties
+	CharacterController _controller;
+	public float MovementSpeed = 10.0f;
+
 	/// <summary>
 	/// Gets a value indicating whether the screen has been touched this frame.
 	/// </summary>
@@ -66,9 +74,6 @@ public class VrModeController : MonoBehaviour
 		// Saves the main camera from the scene.
 		_mainCamera = Camera.main;
 
-		// Configures the app to not shut down the screen and sets the brightness to maximum.
-		// Brightness control is expected to work only in iOS, see:
-		// https://docs.unity3d.com/ScriptReference/Screen-brightness.html.
 		Screen.sleepTimeout = SleepTimeout.NeverSleep;
 		Screen.brightness = 1.0f;
 
@@ -80,13 +85,41 @@ public class VrModeController : MonoBehaviour
 		{
 			Api.ScanDeviceParams();
 		}
+
+		Cursor.visible = true;
+		Cursor.lockState = CursorLockMode.Locked;
+
+		_controller = GetComponentInParent<CharacterController>();
 	}
 
-	/// <summary>
-	/// Update is called once per frame.
-	/// </summary>
+	public void FixedUpdate()
+	{
+		// Movement
+		if (Camera.main != null)
+		{
+			float Horizontal = Input.GetAxis("Horizontal");
+			float Vertical = Input.GetAxis("Vertical");
+
+			Transform Orientation = Camera.main.transform;
+			Vector3 Direction = Orientation.forward * Vertical + Orientation.right * Horizontal;
+
+			Direction.y = 0; // Basically remove noclip movement
+
+			_controller.Move(Direction * MovementSpeed * Time.deltaTime);
+			transform.parent.transform.eulerAngles = new Vector3();
+		}
+	}
+
 	public void Update()
 	{
+		if (Application.platform != RuntimePlatform.Android)
+		{
+			MouseX += Input.GetAxis("Mouse X") * 2;
+			MouseY -= Input.GetAxis("Mouse Y") * 2;
+
+			transform.eulerAngles = new Vector3(MouseY, MouseX, 0);
+		}
+
 		if (SystemInfo.graphicsDeviceType != GraphicsDeviceType.OpenGLES3) return;
 
 		if (_isVrModeEnabled)
