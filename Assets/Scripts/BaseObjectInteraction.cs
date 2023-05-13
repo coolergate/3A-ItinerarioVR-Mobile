@@ -7,31 +7,31 @@ public class BaseObjectInteraction : MonoBehaviour
 	Renderer _render;
 
 	public Material MaterialDefault;
+	public Material Material1;
 	public Material Material2;
-	public Material Material3;
 
 	// Start is called before the first frame update
 	void Start()
 	{
 		_render = GetComponent<MeshRenderer>();
 
-		
+		_render.material = MaterialDefault;
 	}
 
 	// Update is called once per frame
 	void Update()
 	{
-
+		
 	}
 
 	public void OnPointerEnter()
     {
-		_render.material = Material2;
+		_render.material = Material1;
     }
 
 	public void OnPointerClick()
     {
-		_render.material = Material3;
+		_render.material = Material2;
     }
 
 	public void OnPointerLeave()

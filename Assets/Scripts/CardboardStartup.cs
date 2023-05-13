@@ -19,6 +19,7 @@
 using Google.XR.Cardboard;
 using UnityEngine;
 using UnityEngine.Rendering;
+using UnityEngine.SceneManagement;
 
 /// <summary>
 /// Initializes Cardboard XR Plugin.
@@ -41,6 +42,9 @@ public class CardboardStartup : MonoBehaviour
 		{
 			Api.ScanDeviceParams();
 		}
+
+		// Add the player from another scene
+		SceneManager.LoadScene(1, LoadSceneMode.Additive);
 	}
 
 	/// <summary>
@@ -48,12 +52,14 @@ public class CardboardStartup : MonoBehaviour
 	/// </summary>
 	public void Update()
 	{
-		if (SystemInfo.graphicsDeviceType != GraphicsDeviceType.OpenGLES3) return;
+
+		//if (SystemInfo.graphicsDeviceType != GraphicsDeviceType.OpenGLES3) return;
+		if (Application.platform != RuntimePlatform.Android) return;
 		
-		if (Api.IsGearButtonPressed)
+		/*if (Api.IsGearButtonPressed)
 		{
 			Api.ScanDeviceParams();
-		}
+		}*/
 
 		if (Api.IsCloseButtonPressed)
 		{
