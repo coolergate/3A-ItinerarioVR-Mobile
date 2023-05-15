@@ -7,11 +7,11 @@ using UnityEngine.XR.Management;
 using UnityEngine.UI;
 
 /// <summary>
-/// Módulo que controla a perspectiva do jogador em primeira pessoa
+/// Modulo que controla a perspectiva do jogador em primeira pessoa
 /// </summary>
 public class FirstPersonController : MonoBehaviour
 {
-	// Campo de visão para quando o modo VR não estiver ativo
+	// Campo de visï¿½o para quando o modo VR nï¿½o estiver ativo
 	private const float _defaultFieldOfView = 60.0f;
 
 	private Camera _Camera;
@@ -24,7 +24,7 @@ public class FirstPersonController : MonoBehaviour
 	CharacterController _Controller;
 	public float MovementSpeed = 10.0f;
 
-	// Ponteiro para indicar objeto que está sendo apontado
+	// Ponteiro para indicar objeto que estï¿½ sendo apontado
 	private GameObject _CurrentGazedObject;
 
     // Propriedades do crosshair para alterar quando tiver um objeto ativo
@@ -33,7 +33,7 @@ public class FirstPersonController : MonoBehaviour
 	public Color CrosshairGazedColor = new Color(1.0f, 0.0f, 0.0f);
 
 	/// <summary>
-	/// Retorna se a tela está sendo tocada neste frame
+	/// Retorna se a tela estï¿½ sendo tocada neste frame
 	/// </summary>
 	private bool _isScreenTouched
 	{
@@ -44,7 +44,7 @@ public class FirstPersonController : MonoBehaviour
 	}
 
 	/// <summary>
-	/// Retorna uma variável indicando se o modo VR está ativo
+	/// Retorna uma variï¿½vel indicando se o modo VR estï¿½ ativo
 	/// </summary>
 	private bool _isVrModeEnabled
 	{
@@ -56,22 +56,22 @@ public class FirstPersonController : MonoBehaviour
 
 	public void Start()
 	{
-		// Salva a câmera principal da cena
+		// Salva a cï¿½mera principal da cena
 		_Camera = Camera.main;
 
 		Screen.sleepTimeout = SleepTimeout.NeverSleep;
 		Screen.brightness = 1.0f;
 
-		// Verifica se os parãmetros do dispositivo está guardado, scanea se não.
-		// Isso é somente obrigatório se o plugin XR está ativo na inicialização,
-		// se não esses chamados da API podem ser removidos e somente ser usado
+		// Verifica se os parï¿½metros do dispositivo estï¿½ guardado, scanea se nï¿½o.
+		// Isso ï¿½ somente obrigatï¿½rio se o plugin XR estï¿½ ativo na inicializaï¿½ï¿½o,
+		// se nï¿½o esses chamados da API podem ser removidos e somente ser usado
 		// quando o plugin XR estiver ativo.
 		if (!Api.HasDeviceParams())
 		{
 			Api.ScanDeviceParams();
 		}
 
-		// Remover o cursor da tela e trancar para que não saia do centro
+		// Remover o cursor da tela e trancar para que nï¿½o saia do centro
 		Cursor.visible = true;
 		Cursor.lockState = CursorLockMode.Locked;
 
@@ -80,7 +80,7 @@ public class FirstPersonController : MonoBehaviour
 
 	public void FixedUpdate()
 	{
-		// Movimentação
+		// Movimentacao
 		if (Camera.main != null)
 		{
 			float Horizontal = Input.GetAxis("Horizontal");
@@ -89,7 +89,7 @@ public class FirstPersonController : MonoBehaviour
 			Transform Orientation = Camera.main.transform;
 			Vector3 Direction = Orientation.forward * Vertical + Orientation.right * Horizontal;
 
-			// Remover movimento vertical para que o jogador não fique voando pela cena
+			// Remover movimento vertical para que o jogador nï¿½o fique voando pela cena
 			Direction.y = 0;
 
 			_Controller.Move(Direction * MovementSpeed * Time.deltaTime);
@@ -126,13 +126,13 @@ public class FirstPersonController : MonoBehaviour
 		else
 		{
 
-			// Nenhum objeto detectado em frente a câmera
+			// Nenhum objeto detectado em frente a camera
 			if (_CurrentGazedObject != null) SendMessage(_CurrentGazedObject, "OnPointerExit");
 			_CurrentGazedObject = null;
 
 		}
 
-		if (_CurrentGazedObject != null)
+		if (_CurrentGazedObject != null && _CurrentGazedObject.tag == "VR_Interactable")
 		{
 
 			if (CrosshairImage != null) CrosshairImage.color = CrosshairGazedColor;
@@ -148,7 +148,7 @@ public class FirstPersonController : MonoBehaviour
 
 		}
 
-		// Desta linha para frente é somente para VR / XR no Android
+		// Desta linha para frente somente para VR / XR no Android
 		if (SystemInfo.graphicsDeviceType != GraphicsDeviceType.OpenGLES3 || Application.platform != RuntimePlatform.Android) return;
 
 		if (_isVrModeEnabled)
@@ -201,7 +201,7 @@ public class FirstPersonController : MonoBehaviour
 	/// </summary>
 	///
 	/// <returns>
-	/// Retorna a variável do método <c>InitializeLoader</c> do arquivo de configação XR Geral.
+	/// Retorna a variï¿½vel do mï¿½todo <c>InitializeLoader</c> do arquivo de configaï¿½ï¿½o XR Geral.
 	/// </returns>
 	private IEnumerator StartXR()
 	{

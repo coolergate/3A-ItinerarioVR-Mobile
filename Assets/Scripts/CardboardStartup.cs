@@ -10,13 +10,13 @@ public class CardboardStartup : MonoBehaviour
 {
 	public void Start()
 	{
-		// Configura o aplicativo para não desligar a tela e aumenta o brilho no máximo.
-		// Controle de brilho é esperado para somente funcionar no iOS, olhe:
+		// Configura o aplicativo para nao desligar a tela e aumenta o brilho no maximo.
+		// Controle de brilho e esperado para somente funcionar no iOS, olhe:
 		// https://docs.unity3d.com/ScriptReference/Screen-brightness.html.
 		Screen.sleepTimeout = SleepTimeout.NeverSleep;
 		Screen.brightness = 1.0f;
 
-		// Verifica se o dispositivo tem os parâmetros guardados e escaneia caso não.
+		// Verifica se o dispositivo tem os parï¿½metros guardados e escaneia caso nï¿½o.
 		if (!Api.HasDeviceParams())
 		{
 			Api.ScanDeviceParams();
