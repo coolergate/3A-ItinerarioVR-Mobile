@@ -42,6 +42,15 @@ public class FirstPersonController : MonoBehaviour
 			return Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began;
 		}
 	}
+	private bool _isInputActive
+	{
+		get
+		{
+			bool physical_input = Input.GetMouseButtonDown(0) || Input.GetButtonDown("Attack1");
+			bool touch_input = Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began;
+			return physical_input || touch_input;
+		}
+	}
 
 	/// <summary>
 	/// Retorna uma vari�vel indicando se o modo VR est� ativo
@@ -137,8 +146,7 @@ public class FirstPersonController : MonoBehaviour
 
 			if (CrosshairImage != null) CrosshairImage.color = CrosshairGazedColor;
 
-			bool InputIsDown = Input.GetMouseButtonDown(0) || Input.GetButtonDown("Attack1") || Input.touchCount > 0;
-			if (InputIsDown) SendMessage(_CurrentGazedObject, "OnPointerClick");
+			if (_isInputActive) SendMessage(_CurrentGazedObject, "OnPointerClick");
 			
 		}
 		else
