@@ -24,8 +24,17 @@ public class FirstPersonController : MonoBehaviour
 	CharacterController _Controller;
 	public float MovementSpeed = 10.0f;
 
-	// Ponteiro para indicar objeto que est� sendo apontado
-	private GameObject _CurrentGazedObject;
+	// Objeto que esta sendo apontado pela camera
+	private GameObject _currentObject;
+	private ObjectInteractionHandler _currentObjectController;
+
+	public GameObject CurrentGazedObject // Funcao para outros scripts pegar o objeto
+	{
+		get
+		{
+			return _currentObject;
+		}
+	}
 
     // Propriedades do crosshair para alterar quando tiver um objeto ativo
     public Image CrosshairImage;
@@ -118,46 +127,50 @@ public class FirstPersonController : MonoBehaviour
 
 		// Raycast para interagir com os objetos da cena
 		RaycastHit hit;
-		if (Physics.Raycast(transform.position, transform.forward, out hit, Mathf.Infinity))
+		GameObject GazedObject;
+		ObjectInteractionHandler GazedObjectController;
+
+		bool success_raycast = Physics.Raycast(transform.position, transform.forward, out hit, Mathf.Infinity);
+
+		if (success_raycast && hit.transform.gameObject.TryGetComponent<ObjectInteractionHandler>(out GazedObjectController))
 		{
+			if (GazedObjectController != null) GazedObject = hit.transform.gameObject; else GazedObject = null;
 
-			if (hit.transform.gameObject != _CurrentGazedObject)
+			if (GazedObject != _currentObject)
 			{
+				if (_currentObjectController != null) _currentObjectController.OnPointerExit();
+					//SendMessage(_currentObject, "OnPointerExit");
+				
 
-				if (_CurrentGazedObject != null) SendMessage(_CurrentGazedObject, "OnPointerExit");
-
-				_CurrentGazedObject = hit.transform.gameObject;
-				SendMessage(_CurrentGazedObject, "OnPointerEnter");
-
+				if (GazedObjectController) GazedObjectController.OnPointerEnter();
+					//SendMessage(_currentObject, "OnPointerEnter");
+				
 			}
 
+			_currentObject = GazedObject;
+			_currentObjectController = GazedObjectController;
 		}
-		else
+		else // Nenhum objeto em frente a camera
 		{
-
-			// Nenhum objeto detectado em frente a camera
-			if (_CurrentGazedObject != null) SendMessage(_CurrentGazedObject, "OnPointerExit");
-			_CurrentGazedObject = null;
-
+			if (_currentObjectController != null) _currentObjectController.OnPointerExit();
+			_currentObjectController = null;
+			_currentObject = null;
 		}
 
-		if (_CurrentGazedObject != null && _CurrentGazedObject.tag == "VR_Interactable")
+		if (_currentObjectController != null)
 		{
-
 			if (CrosshairImage != null) CrosshairImage.color = CrosshairGazedColor;
 
-			if (_isInputActive) SendMessage(_CurrentGazedObject, "OnPointerClick");
-			
+			if (_isInputActive) _currentObjectController.OnPointerClick();
+				//SendMessage(_currentObject, "OnPointerClick");
 		}
 		else
 		{
-
 			if (CrosshairImage != null) CrosshairImage.color = CrosshairDefaultColor;
-
 		}
 
 		// Desta linha para frente somente para VR / XR no Android
-		if (SystemInfo.graphicsDeviceType != GraphicsDeviceType.OpenGLES3 || Application.platform != RuntimePlatform.Android) return;
+		if (!Application.isMobilePlatform) return;
 
 		if (_isVrModeEnabled)
 		{
@@ -166,10 +179,10 @@ public class FirstPersonController : MonoBehaviour
 				ExitVR();
 			}
 
-			if (Api.IsGearButtonPressed)
+			/*if (Api.IsGearButtonPressed)
 			{
 				Api.ScanDeviceParams();	
-			}
+			}*/
 
 			Api.UpdateScreenParams();
 		}

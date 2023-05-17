@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BaseObjectInteraction : MonoBehaviour
+public class ObjectInteractionHandler : MonoBehaviour
 {
 	Renderer _render;
 
@@ -34,7 +34,7 @@ public class BaseObjectInteraction : MonoBehaviour
 		_render.material = Material2;
     }
 
-	public void OnPointerLeave()
+	public void OnPointerExit()
     {
 		_render.material = MaterialDefault;
     }
