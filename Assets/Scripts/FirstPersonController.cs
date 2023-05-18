@@ -11,9 +11,7 @@ using UnityEngine.UI;
 /// </summary>
 public class FirstPersonController : MonoBehaviour
 {
-	// Campo de vis�o para quando o modo VR n�o estiver ativo
 	private const float _defaultFieldOfView = 60.0f;
-
 	private Camera _Camera;
 
 	// Movimento do mouse para computador
@@ -53,9 +51,6 @@ public class FirstPersonController : MonoBehaviour
 		}
 	}
 
-	/// <summary>
-	/// Retorna uma vari�vel indicando se o modo VR est� ativo
-	/// </summary>
 	private bool _isVrModeEnabled
 	{
 		get
@@ -66,7 +61,6 @@ public class FirstPersonController : MonoBehaviour
 
 	public void Start()
 	{
-		// Salva a c�mera principal da cena
 		_Camera = Camera.main;
 
 		Screen.sleepTimeout = SleepTimeout.NeverSleep;
