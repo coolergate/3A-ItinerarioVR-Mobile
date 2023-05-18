@@ -3,9 +3,6 @@ using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.SceneManagement;
 
-/// <summary>
-/// Inicia o plugin Cardboard XR.
-/// </summary>
 public class CardboardStartup : MonoBehaviour
 {
 	public void Start()
@@ -14,7 +11,7 @@ public class CardboardStartup : MonoBehaviour
 		Screen.brightness = 1.0f; // so funciona no iOS
 
 		// Adicionar o jogador de outra cena.
-		SceneManager.LoadScene(1, LoadSceneMode.Additive);
+		SceneManager.LoadScene(2, LoadSceneMode.Additive);
 	}
 
 	public void Update()

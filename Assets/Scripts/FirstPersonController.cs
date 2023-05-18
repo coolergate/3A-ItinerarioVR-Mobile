@@ -28,14 +28,6 @@ public class FirstPersonController : MonoBehaviour
 	private GameObject _currentObject;
 	private ObjectInteractionHandler _currentObjectController;
 
-	public GameObject CurrentGazedObject // Funcao para outros scripts pegar o objeto
-	{
-		get
-		{
-			return _currentObject;
-		}
-	}
-
     // Propriedades do crosshair para alterar quando tiver um objeto ativo
     public Image CrosshairImage;
 	public Color CrosshairDefaultColor = new Color(1.0f, 1.0f, 1.0f);
@@ -80,15 +72,6 @@ public class FirstPersonController : MonoBehaviour
 		Screen.sleepTimeout = SleepTimeout.NeverSleep;
 		Screen.brightness = 1.0f;
 
-		// Verifica se os par�metros do dispositivo est� guardado, scanea se n�o.
-		// Isso � somente obrigat�rio se o plugin XR est� ativo na inicializa��o,
-		// se n�o esses chamados da API podem ser removidos e somente ser usado
-		// quando o plugin XR estiver ativo.
-		if (!Api.HasDeviceParams())
-		{
-			Api.ScanDeviceParams();
-		}
-
 		// Remover o cursor da tela e trancar para que n�o saia do centro
 		Cursor.visible = true;
 		Cursor.lockState = CursorLockMode.Locked;
@@ -106,18 +89,15 @@ public class FirstPersonController : MonoBehaviour
 
 			Transform Orientation = Camera.main.transform;
 			Vector3 Direction = Orientation.forward * Vertical + Orientation.right * Horizontal;
-
-			// Remover movimento vertical para que o jogador n�o fique voando pela cena
 			Direction.y = 0;
 
 			_Controller.Move(Direction * MovementSpeed * Time.deltaTime);
-			transform.parent.transform.eulerAngles = new Vector3();
 		}
 	}
 
 	public void Update()
 	{
-		if (Application.platform != RuntimePlatform.Android)
+		if (!Application.isMobilePlatform)
 		{
 			MouseX += Input.GetAxis("Mouse X") * 2;
 			MouseY -= Input.GetAxis("Mouse Y") * 2;
