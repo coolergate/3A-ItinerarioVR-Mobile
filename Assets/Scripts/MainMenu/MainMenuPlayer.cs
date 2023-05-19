@@ -6,27 +6,17 @@ using UnityEngine.XR;
 using UnityEngine.XR.Management;
 using UnityEngine.UI;
 
-/// <summary>
-/// Modulo que controla a perspectiva do jogador em primeira pessoa
-/// </summary>
 public class MainMenuPlayer : MonoBehaviour
 {
 	private float _defaultFieldOfView;
 	private Camera _Camera;
 
-	// Movimento do mouse para computador
 	public float MouseSensitivity = 2.0f;
 	private float MouseX = 0.0f, MouseY = 0.0f;
 
-	// Propriedades de movimento do jogador
-	CharacterController _Controller;
-	public float MovementSpeed = 10.0f;
-
-	// Objeto que esta sendo apontado pela camera
 	private GameObject _currentObject;
 	private ObjectInteractionHandler _currentObjectController;
 
-    // Propriedades do crosshair para alterar quando tiver um objeto ativo
     public Image CrosshairImage;
 	public Color CrosshairDefaultColor = new Color(1.0f, 1.0f, 1.0f);
 	public Color CrosshairGazedColor = new Color(1.0f, 0.0f, 0.0f);
@@ -66,37 +56,10 @@ public class MainMenuPlayer : MonoBehaviour
 		// Remover o cursor da tela e trancar para que n�o saia do centro
 		Cursor.visible = true;
 		Cursor.lockState = CursorLockMode.Locked;
-
-		_Controller = GetComponentInParent<CharacterController>();
 	}
 
-	public void FixedUpdate()
+	public void RaycastPortals()
 	{
-		// Movimentacao
-		if (Camera.main != null)
-		{
-			float Horizontal = Input.GetAxis("Horizontal");
-			float Vertical = Input.GetAxis("Vertical");
-
-			Transform Orientation = Camera.main.transform;
-			Vector3 Direction = Orientation.forward * Vertical + Orientation.right * Horizontal;
-			Direction.y = 0;
-
-			_Controller.Move(Direction * MovementSpeed * Time.deltaTime);
-		}
-	}
-
-	public void Update()
-	{
-		if (!Application.isMobilePlatform)
-		{
-			MouseX += Input.GetAxis("Mouse X") * 2;
-			MouseY -= Input.GetAxis("Mouse Y") * 2;
-
-			transform.eulerAngles = new Vector3(MouseY, MouseX, 0);
-		}
-
-		// Raycast para interagir com os objetos da cena
 		RaycastHit hit;
 		GameObject GazedObject;
 		ObjectInteractionHandler GazedObjectController;
@@ -110,12 +73,7 @@ public class MainMenuPlayer : MonoBehaviour
 			if (GazedObject != _currentObject)
 			{
 				if (_currentObjectController != null) _currentObjectController.OnPointerExit();
-					//SendMessage(_currentObject, "OnPointerExit");
-				
-
 				if (GazedObjectController) GazedObjectController.OnPointerEnter();
-					//SendMessage(_currentObject, "OnPointerEnter");
-				
 			}
 
 			_currentObject = GazedObject;
@@ -138,6 +96,17 @@ public class MainMenuPlayer : MonoBehaviour
 		else
 		{
 			if (CrosshairImage != null) CrosshairImage.color = CrosshairDefaultColor;
+		}
+	}
+
+	public void Update()
+	{
+		if (!Application.isMobilePlatform)
+		{
+			MouseX += Input.GetAxis("Mouse X") * 2;
+			MouseY -= Input.GetAxis("Mouse Y") * 2;
+
+			transform.eulerAngles = new Vector3(MouseY, MouseX, 0);
 		}
 
 		// Desta linha para frente somente para VR / XR no Android
