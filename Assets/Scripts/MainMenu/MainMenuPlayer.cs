@@ -5,21 +5,28 @@ using UnityEngine.Rendering;
 using UnityEngine.XR;
 using UnityEngine.XR.Management;
 using UnityEngine.UI;
+using TMPro;
 
 public class MainMenuPlayer : MonoBehaviour
 {
-	private float _defaultFieldOfView;
-	private Camera _Camera;
+	private const float _defaultFieldOfView = 60.0f;
+	Camera _Camera;
+	CharacterController _Controller;
 
+	[Header ("Properties")]
 	public float MouseSensitivity = 2.0f;
 	private float MouseX = 0.0f, MouseY = 0.0f;
 
-	private GameObject _currentObject;
-	private ObjectInteractionHandler _currentObjectController;
-
-    public Image CrosshairImage;
+	[Header ("Interface")]
+	public Image CrosshairImage;
 	public Color CrosshairDefaultColor = new Color(1.0f, 1.0f, 1.0f);
-	public Color CrosshairGazedColor = new Color(1.0f, 0.0f, 0.0f);
+	public Color CrosshairGazedColor = new Color(1.0f, 1.0f, 0.0f);
+
+	public GameObject HoverUIElement; 
+
+	public TextMeshProUGUI DescriptionText;
+
+	private MainMenuPortal _currentPortal;
 
 	private bool _isScreenTouched
 	{
@@ -53,50 +60,10 @@ public class MainMenuPlayer : MonoBehaviour
 		Screen.sleepTimeout = SleepTimeout.NeverSleep;
 		Screen.brightness = 1.0f;
 
-		// Remover o cursor da tela e trancar para que n�o saia do centro
 		Cursor.visible = true;
 		Cursor.lockState = CursorLockMode.Locked;
-	}
 
-	public void RaycastPortals()
-	{
-		RaycastHit hit;
-		GameObject GazedObject;
-		ObjectInteractionHandler GazedObjectController;
-
-		bool success_raycast = Physics.Raycast(transform.position, transform.forward, out hit, Mathf.Infinity);
-
-		if (success_raycast && hit.transform.gameObject.TryGetComponent<ObjectInteractionHandler>(out GazedObjectController))
-		{
-			if (GazedObjectController != null) GazedObject = hit.transform.gameObject; else GazedObject = null;
-
-			if (GazedObject != _currentObject)
-			{
-				if (_currentObjectController != null) _currentObjectController.OnPointerExit();
-				if (GazedObjectController) GazedObjectController.OnPointerEnter();
-			}
-
-			_currentObject = GazedObject;
-			_currentObjectController = GazedObjectController;
-		}
-		else // Nenhum objeto em frente a camera
-		{
-			if (_currentObjectController != null) _currentObjectController.OnPointerExit();
-			_currentObjectController = null;
-			_currentObject = null;
-		}
-
-		if (_currentObjectController != null)
-		{
-			if (CrosshairImage != null) CrosshairImage.color = CrosshairGazedColor;
-
-			if (_isInputActive) _currentObjectController.OnPointerClick();
-				//SendMessage(_currentObject, "OnPointerClick");
-		}
-		else
-		{
-			if (CrosshairImage != null) CrosshairImage.color = CrosshairDefaultColor;
-		}
+		_Controller = GetComponentInParent<CharacterController>();
 	}
 
 	public void Update()
@@ -109,15 +76,49 @@ public class MainMenuPlayer : MonoBehaviour
 			transform.eulerAngles = new Vector3(MouseY, MouseX, 0);
 		}
 
+		// Raycast para interagir com os objetos da cena
+		MainMenuPortal GazedPortal = RaycastInteractableObject();
+
+		if (GazedPortal != _currentPortal)
+		{
+			if (_currentPortal != null) _currentPortal.OnPointerExit();
+				//SendMessage(_currentObject, "OnPointerExit");
+				
+
+			if (GazedPortal) GazedPortal.OnPointerEnter();
+				//SendMessage(_currentObject, "OnPointerEnter");
+
+			_currentPortal = GazedPortal;
+		}
+
+		if (_currentPortal != null)
+		{
+			if (CrosshairImage != null) CrosshairImage.color = CrosshairGazedColor;
+			if (HoverUIElement) HoverUIElement.SetActive(true);
+
+			if (DescriptionText)
+			{
+				DescriptionText.gameObject.SetActive(true);
+				DescriptionText.text = GazedPortal.PortalName;
+			}
+
+			if (_isInputActive) _currentPortal.OnActivated(this);
+				//SendMessage(_currentObject, "OnPointerClick");
+		}
+		else
+		{
+			if (CrosshairImage != null) CrosshairImage.color = CrosshairDefaultColor;
+			if (HoverUIElement) HoverUIElement.SetActive(false);
+			if (DescriptionText) DescriptionText.gameObject.SetActive(false);
+			
+		}
+
 		// Desta linha para frente somente para VR / XR no Android
 		if (!Application.isMobilePlatform) return;
 
 		if (_isVrModeEnabled)
 		{
-			if (Api.IsCloseButtonPressed)
-			{
-				ExitVR();
-			}
+			if (Api.IsCloseButtonPressed) StopXR();
 
 			/*if (Api.IsGearButtonPressed)
 			{
@@ -129,16 +130,10 @@ public class MainMenuPlayer : MonoBehaviour
 		else
 		{
 			// TODO(b/171727815): Add a button to switch to VR mode.
-			if (_isScreenTouched)
-			{
-				EnterVR();
-			}
+			if (_isScreenTouched) EnterVR();
 		}
 	}
 
-	/// <summary>
-	/// Entrar no modo VR.
-	/// </summary>
 	private void EnterVR()
 	{
 		StartCoroutine(StartXR());
@@ -148,22 +143,6 @@ public class MainMenuPlayer : MonoBehaviour
 		}
 	}
 
-	/// <summary>
-	/// Sair do modo VR.
-	/// </summary>
-	private void ExitVR()
-	{
-		StopXR();
-	}
-
-	/// <summary>
-	/// Inicializa o plugin Cardboard XR
-	/// Olhe https://docs.unity3d.com/Packages/com.unity.xr.management@3.2/manual/index.html.
-	/// </summary>
-	///
-	/// <returns>
-	/// Retorna a vari�vel do m�todo <c>InitializeLoader</c> do arquivo de configa��o XR Geral.
-	/// </returns>
 	private IEnumerator StartXR()
 	{
 		Debug.Log("Initializing XR...");
@@ -183,11 +162,6 @@ public class MainMenuPlayer : MonoBehaviour
 		}
 	}
 
-	/// <summary>
-	/// Stops and deinitializes the Cardboard XR plugin.
-	/// Encerra o plugin Cardboard XR
-	/// Olhe https://docs.unity3d.com/Packages/com.unity.xr.management@3.2/manual/index.html.
-	/// </summary>
 	private void StopXR()
 	{
 		Debug.Log("Stopping XR...");
@@ -205,5 +179,21 @@ public class MainMenuPlayer : MonoBehaviour
 	private void SendMessage(GameObject Object, string Message)
 	{
 		Object.SendMessage(Message, null, SendMessageOptions.DontRequireReceiver);
+	}
+
+	MainMenuPortal RaycastInteractableObject()
+	{
+		RaycastHit hit;
+		bool success_raycast = Physics.Raycast(transform.position, transform.forward, out hit, Mathf.Infinity);
+
+		if (success_raycast)
+		{
+			GameObject GazedObject = hit.transform.gameObject;
+			MainMenuPortal GazedObjectController = GazedObject.GetComponent<MainMenuPortal>();
+
+			if (GazedObjectController != null) return GazedObjectController;
+		}
+
+		return null;
 	}
 }
