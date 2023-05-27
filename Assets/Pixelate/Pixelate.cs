@@ -11,12 +11,10 @@ public class Pixelate : MonoBehaviour{
 	int _pixelSizeY = 1;
 	Material _material;
 
-	[Range(1, 50)]
-	public int pixelSizeX = 1;
-	
-	[Range(1, 50)]
-	public int pixelSizeY = 1;
+	[Range(1, 100)]
+	public int pixelSizeX = 1, pixelSizeY = 1;
 	public bool lockXY = true;
+
 	void OnRenderImage(RenderTexture source, RenderTexture destination)
 	{
 		if (_material == null) _material = new Material(shader);
