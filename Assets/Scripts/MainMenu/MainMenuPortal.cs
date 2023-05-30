@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using TMPro;
 
 public class MainMenuPortal : MonoBehaviour
 {
@@ -20,6 +21,12 @@ public class MainMenuPortal : MonoBehaviour
 	public string PortalName = "";
 	public string PortalDescription = "";
 
+	[Header ("Text properties")]
+	public Canvas Canvas;
+	public TextMeshProUGUI TextMesh;
+
+	private bool IsBeingGazed = false;
+
 	// Start is called before the first frame update
 	void Start()
 	{
@@ -31,7 +38,10 @@ public class MainMenuPortal : MonoBehaviour
 	// Update is called once per frame
 	void Update()
 	{
-		
+		if (IsBeingGazed)
+		{
+			Canvas.transform.position = Vector3.Lerp(Canvas.transform.position, new Vector3());
+		}
 	}
 
 	public void OnActivated(MainMenuPlayer self)
