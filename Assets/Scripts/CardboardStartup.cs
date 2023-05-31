@@ -7,8 +7,8 @@ public class CardboardStartup : MonoBehaviour
 {
 	public void Start()
 	{
-		Screen.sleepTimeout = SleepTimeout.NeverSleep; // fazer com que a tela nao desligue
-		Screen.brightness = 1.0f; // so funciona no iOS
+		Screen.sleepTimeout = SleepTimeout.NeverSleep;
+		Screen.brightness = 1.0f; // only works on iOS
 
 		// Adicionar o jogador de outra cena.
 		SceneManager.LoadScene(2, LoadSceneMode.Additive);

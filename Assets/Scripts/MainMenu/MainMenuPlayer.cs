@@ -99,7 +99,7 @@ public class MainMenuPlayer : MonoBehaviour
 			if (DescriptionText)
 			{
 				DescriptionText.gameObject.SetActive(true);
-				DescriptionText.text = GazedPortal.PortalName;
+				DescriptionText.text = GazedPortal.Portal_Description;
 			}
 
 			if (_isInputActive) _currentPortal.OnActivated(this);
@@ -174,11 +174,6 @@ public class MainMenuPlayer : MonoBehaviour
 
 		_Camera.ResetAspect();
 		_Camera.fieldOfView = _defaultFieldOfView;
-	}
-
-	private void SendMessage(GameObject Object, string Message)
-	{
-		Object.SendMessage(Message, null, SendMessageOptions.DontRequireReceiver);
 	}
 
 	MainMenuPortal RaycastInteractableObject()

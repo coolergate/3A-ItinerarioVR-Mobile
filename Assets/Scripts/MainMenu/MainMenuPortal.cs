@@ -6,63 +6,67 @@ using TMPro;
 
 public class MainMenuPortal : MonoBehaviour
 {
+	private bool _beingGazed = false;
 	Renderer _render;
-
-	[Header ("Materials")]
-	public Material MaterialDefault;
-	public Material Material1;
-	public Material Material2;
 
 	[Header ("Scenes")]
 	public int SceneIndex;
 	public LoadSceneMode LoadMode;
 
 	[Header ("Portal properties")]
-	public string PortalName = "";
-	public string PortalDescription = "";
+	public string Portal_Name = "";
+	public string Portal_Description = "";
+	public Camera Target_Camera;
 
 	[Header ("Text properties")]
 	public Canvas Canvas;
 	public TextMeshProUGUI TextMesh;
 
-	private bool IsBeingGazed = false;
+	[Header ("Scene preview properties")]
+	public GameObject PreviewSceneObject;
 
 	// Start is called before the first frame update
 	void Start()
 	{
 		_render = GetComponent<MeshRenderer>();
 
-		_render.material = MaterialDefault;
+		TextMesh.text = Portal_Name;
+
+		// make everything 
 	}
 
-	// Update is called once per frame
 	void Update()
 	{
-		if (IsBeingGazed)
+		Vector3 _parent_pos = Canvas.transform.parent.position;
+
+		if (_beingGazed)
 		{
-			Canvas.transform.position = Vector3.Lerp(Canvas.transform.position, new Vector3());
+			Canvas.transform.position = Vector3.Lerp(Canvas.transform.position, _parent_pos + new Vector3(0, 3f, 0), 0.25f);
 		}
+		else
+		{
+			Canvas.transform.position = _parent_pos + new Vector3(0, 2f, 0);
+		}
+
+		Canvas.enabled = _beingGazed;
 	}
 
 	public void OnActivated(MainMenuPlayer self)
 	{
 		SceneManager.LoadScene(SceneIndex, LoadMode);
-
-
 	}
 
 	public void OnPointerEnter()
     {
-		_render.material = Material1;
+		_beingGazed = true;
     }
 
 	public void OnPointerClick()
     {
-		_render.material = Material2;
     }
 
 	public void OnPointerExit()
     {
-		_render.material = MaterialDefault;
+		_beingGazed = false;
     }
 }
