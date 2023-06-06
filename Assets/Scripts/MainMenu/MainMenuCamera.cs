@@ -7,41 +7,23 @@ using UnityEngine.XR.Management;
 using UnityEngine.UI;
 using TMPro;
 
-public class MainMenuPlayer : MonoBehaviour
+public class MainMenuCamera : MonoBehaviour
 {
 	private const float _defaultFieldOfView = 60.0f;
 	Camera _Camera;
-	CharacterController _Controller;
+
+	[Header ("Root object properties")]
+	public MainMenuRootObject RootObject;
 
 	[Header ("Properties")]
 	public float MouseSensitivity = 2.0f;
 	private float MouseX = 0.0f, MouseY = 0.0f;
-
-	[Header ("Interface")]
-	public Image CrosshairImage;
-	public Color CrosshairDefaultColor = new Color(1.0f, 1.0f, 1.0f);
-	public Color CrosshairGazedColor = new Color(1.0f, 1.0f, 0.0f);
-
-	public GameObject HoverUIElement; 
-
-	public TextMeshProUGUI DescriptionText;
-
-	private MainMenuPortal _currentPortal;
 
 	private bool _isScreenTouched
 	{
 		get
 		{
 			return Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began;
-		}
-	}
-	private bool _isInputActive
-	{
-		get
-		{
-			bool physical_input = Input.GetMouseButtonDown(0) || Input.GetButtonDown("Attack1");
-			bool touch_input = Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began;
-			return physical_input || touch_input;
 		}
 	}
 
@@ -62,8 +44,6 @@ public class MainMenuPlayer : MonoBehaviour
 
 		Cursor.visible = true;
 		Cursor.lockState = CursorLockMode.Locked;
-
-		_Controller = GetComponentInParent<CharacterController>();
 	}
 
 	public void Update()
@@ -74,43 +54,6 @@ public class MainMenuPlayer : MonoBehaviour
 			MouseY -= Input.GetAxis("Mouse Y") * 2;
 
 			transform.eulerAngles = new Vector3(MouseY, MouseX, 0);
-		}
-
-		// Raycast para interagir com os objetos da cena
-		MainMenuPortal GazedPortal = RaycastInteractableObject();
-
-		if (GazedPortal != _currentPortal)
-		{
-			if (_currentPortal != null) _currentPortal.OnPointerExit();
-				//SendMessage(_currentObject, "OnPointerExit");
-				
-
-			if (GazedPortal) GazedPortal.OnPointerEnter();
-				//SendMessage(_currentObject, "OnPointerEnter");
-
-			_currentPortal = GazedPortal;
-		}
-
-		if (_currentPortal != null)
-		{
-			if (CrosshairImage != null) CrosshairImage.color = CrosshairGazedColor;
-			if (HoverUIElement) HoverUIElement.SetActive(true);
-
-			if (DescriptionText)
-			{
-				DescriptionText.gameObject.SetActive(true);
-				DescriptionText.text = GazedPortal.Portal_Description;
-			}
-
-			if (_isInputActive) _currentPortal.OnActivated(this);
-				//SendMessage(_currentObject, "OnPointerClick");
-		}
-		else
-		{
-			if (CrosshairImage != null) CrosshairImage.color = CrosshairDefaultColor;
-			if (HoverUIElement) HoverUIElement.SetActive(false);
-			if (DescriptionText) DescriptionText.gameObject.SetActive(false);
-			
 		}
 
 		// Desta linha para frente somente para VR / XR no Android
@@ -174,21 +117,5 @@ public class MainMenuPlayer : MonoBehaviour
 
 		_Camera.ResetAspect();
 		_Camera.fieldOfView = _defaultFieldOfView;
-	}
-
-	MainMenuPortal RaycastInteractableObject()
-	{
-		RaycastHit hit;
-		bool success_raycast = Physics.Raycast(transform.position, transform.forward, out hit, Mathf.Infinity);
-
-		if (success_raycast)
-		{
-			GameObject GazedObject = hit.transform.gameObject;
-			MainMenuPortal GazedObjectController = GazedObject.GetComponent<MainMenuPortal>();
-
-			if (GazedObjectController != null) return GazedObjectController;
-		}
-
-		return null;
 	}
 }
