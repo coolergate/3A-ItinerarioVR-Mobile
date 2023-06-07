@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.0008662385, g: 0.0008602543, b: 0.0008165904, a: 1}
+  m_IndirectSpecularColor: {r: 0.0008701675, g: 0.00086418324, b: 0.00082051783, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -766,7 +766,7 @@ GameObject:
   - component: {fileID: 2021270970}
   - component: {fileID: 2021270969}
   m_Layer: 0
-  m_Name: Barn1
+  m_Name: Holograma_Rodrigo
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
