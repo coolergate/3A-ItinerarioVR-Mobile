@@ -1,48 +1,37 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 using TMPro;
+using UnityEngine;
 
 public class MainMenuRootObject : MonoBehaviour
 {
-	[Header ("Properties")]
+	[Header("Properties")]
 	public float RotationAmount = 0.0f;
 	public float RotationTime = 0.25f;
-	
-	[Header ("Interface properties")]
-	public TextMeshProUGUI DescriptionText; 
+
+	[Header("Interface properties")]
+	public TextMeshProUGUI DescriptionText;
 
 	private int _index = 0;
-	private int _portals_amount = 0;
-	private ArrayList _children_list;
+	private List<MainMenuPortal> _children_list = new List<MainMenuPortal>();
 
 	private MainMenuPortal _current_portal_component;
 	private bool _allowedupdate = true;
+	private bool _inputheld = false;
 
 	// Start is called before the first frame update
 	void Start()
 	{
-		_children_list = new ArrayList(transform.childCount);
-
-		for (int index = 0; index < transform.childCount; index++)
+		foreach (MainMenuPortal component in gameObject.GetComponentsInChildren<MainMenuPortal>())
 		{
-			GameObject child = transform.GetChild(index).gameObject;
-			
-			MainMenuPortal component;
-			child.TryGetComponent<MainMenuPortal>(out component);
-			if (!component) continue;
+			_children_list.Add(component);
 
-			Color ComponentColor = component.PreviewRenderer.material.color;
-			ComponentColor.a = 0.0f;
+			LeanTween.alpha(component.PreviewObject, 0.0f, RotationTime * 0.5f);
 
-			//component.PreviewRenderer.material.color = ComponentColor;
-			component.PreviewRenderer.material.color = new Color(0, 0, 0, 0);
-
-			_portals_amount++;
-			_children_list.Add(child);
+			component.PreviewObject.SetActive(false);
 		}
 
-		Debug.Log(_children_list.Count);
+		StartCoroutine(ChangeOption(1));
 	}
 
 	// Update is called once per frame
@@ -51,34 +40,53 @@ public class MainMenuRootObject : MonoBehaviour
 		if (!_allowedupdate) return;
 
 		float direction = Input.GetAxis("Horizontal");
-		if (direction != 0.0f) StartCoroutine(ChangeOption(direction > 0 ? -1 : 1));
+
+		if (direction != 0.0f)
+		{
+			if (_inputheld == false) StartCoroutine(ChangeOption(direction > 0 ? -1 : 1));
+			_inputheld = true;
+		}
+		else _inputheld = false;
 	}
 
 	private IEnumerator ChangeOption(int direction)
 	{
 		_allowedupdate = false;
+		LeanTween
+			.rotateAround(gameObject, Vector3.up, RotationAmount * direction, RotationTime)
+			.setEase(LeanTweenType.easeOutQuad);
 
-		LeanTween.rotateAround(gameObject, Vector3.up, RotationAmount * direction, RotationTime).setEase(LeanTweenType.easeOutQuad);
+		_index += direction;
+		if (_index == _children_list.Count) _index = 0;
+		if (_index < 0) _index = _children_list.Count - 1;
+
+		MainMenuPortal SelectedObject = _children_list[_index];
+
+		LeanTween.textAlpha(DescriptionText.rectTransform, 0.0f, RotationTime * 0.5f);
 
 		if (_current_portal_component)
 		{
-			Color component_color = _current_portal_component.PreviewRenderer.material.color;
-			component_color.a = 0.0f;
-			LeanTween.color(_current_portal_component.gameObject, new Color(1, 1, 1, 0), RotationTime * 0.5f);
+			LeanTween.alpha(_current_portal_component.PreviewObject, 0.0f, RotationTime * 0.5f);
+
+			yield return new WaitForSeconds(RotationTime * 0.5f);
+
+			_current_portal_component.PreviewObject.SetActive(false);
 		}
+
+		if (SelectedObject != null)
+		{
+			SelectedObject.PreviewObject.SetActive(true);
+			LeanTween.alpha(SelectedObject.PreviewObject, 0.5f, RotationTime * 0.5f);
+
+			DescriptionText.text = SelectedObject.PortalName;
+		}
+		else DescriptionText.text = "";
+
+		LeanTween.textAlpha(DescriptionText.rectTransform, 1.0f, RotationTime * 0.5f);
 
 		yield return new WaitForSeconds(RotationTime * 0.5f);
 
-		_index += direction;
-		if (_index > _children_list.Count - 1 || _index < 0) _index = 0;
-
-		_current_portal_component = _children_list[_index] as MainMenuPortal;
-
-		if (_current_portal_component)
-			LeanTween.color(_current_portal_component.gameObject, new Color(1, 1, 1, 1), RotationTime * 0.5f);
-
-		yield return new WaitForSeconds(RotationTime * 0.5f	);
-
+		_current_portal_component = SelectedObject;
 		_allowedupdate = true;
 	}
 

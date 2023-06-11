@@ -11,7 +11,7 @@ public class MainMenuPortal : MonoBehaviour
 	public int SceneIndex;
 
 	[Header ("Preview object properties")]
-	public MeshRenderer PreviewRenderer;
+	public GameObject PreviewObject;
 
 	private Color _original_color;
 
@@ -24,7 +24,6 @@ public class MainMenuPortal : MonoBehaviour
 
 	void Start()
 	{
-		_original_color = PreviewRenderer.material.color;
 	}
 
 	void Update()
