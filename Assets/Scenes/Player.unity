@@ -380,7 +380,6 @@ GameObject:
   - component: {fileID: 1217569459}
   - component: {fileID: 1217569458}
   - component: {fileID: 1217569462}
-  - component: {fileID: 1217569463}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -446,7 +445,7 @@ Camera:
   m_GameObject: {fileID: 1217569455}
   m_Enabled: 1
   serializedVersion: 2
-  m_ClearFlags: 2
+  m_ClearFlags: 1
   m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0.019607844}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
@@ -497,19 +496,3 @@ MonoBehaviour:
   CrosshairImage: {fileID: 149647965}
   CrosshairDefaultColor: {r: 1, g: 1, b: 1, a: 1}
   CrosshairGazedColor: {r: 1, g: 0, b: 0, a: 1}
---- !u!114 &1217569463
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1217569455}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3f1da63591dc67445b632e87664be9fe, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  shader: {fileID: 4800000, guid: 703b245f98d111d418d988ba74eefbce, type: 3}
-  pixelSizeX: 1
-  pixelSizeY: 1
-  lockXY: 1

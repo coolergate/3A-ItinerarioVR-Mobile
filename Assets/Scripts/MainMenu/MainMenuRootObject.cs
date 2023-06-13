@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class MainMenuRootObject : MonoBehaviour
 {
@@ -10,7 +11,11 @@ public class MainMenuRootObject : MonoBehaviour
 	public float RotationTime = 0.25f;
 
 	[Header("Interface properties")]
-	public TextMeshProUGUI DescriptionText;
+	public TextMeshProUGUI PortalNameText;
+	public TextMeshProUGUI PortalDescriptionText;
+
+	public string DefaultName = "";
+	public string DefaultDescription = "";
 
 	private int _index = 0;
 	private List<MainMenuPortal> _children_list = new List<MainMenuPortal>();
@@ -18,6 +23,16 @@ public class MainMenuRootObject : MonoBehaviour
 	private MainMenuPortal _current_portal_component;
 	private bool _allowedupdate = true;
 	private bool _inputheld = false;
+
+	private bool _isInputActive
+	{
+		get
+		{
+			bool physical_input = Input.GetMouseButtonDown(0) || Input.GetButtonDown("Attack1");
+			bool touch_input = Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began;
+			return physical_input || touch_input;
+		}
+	}
 
 	// Start is called before the first frame update
 	void Start()
@@ -47,6 +62,13 @@ public class MainMenuRootObject : MonoBehaviour
 			_inputheld = true;
 		}
 		else _inputheld = false;
+
+		if (_isInputActive && _current_portal_component)
+		{
+			var scene_index = _current_portal_component.SceneIndex;
+
+			SceneManager.LoadScene(scene_index, LoadSceneMode.Single);
+		}
 	}
 
 	private IEnumerator ChangeOption(int direction)
@@ -62,7 +84,7 @@ public class MainMenuRootObject : MonoBehaviour
 
 		MainMenuPortal SelectedObject = _children_list[_index];
 
-		LeanTween.textAlpha(DescriptionText.rectTransform, 0.0f, RotationTime * 0.5f);
+		LeanTween.textAlpha(PortalNameText.rectTransform, 0.0f, RotationTime * 0.5f);
 
 		if (_current_portal_component)
 		{
@@ -78,11 +100,12 @@ public class MainMenuRootObject : MonoBehaviour
 			SelectedObject.PreviewObject.SetActive(true);
 			LeanTween.alpha(SelectedObject.PreviewObject, 0.5f, RotationTime * 0.5f);
 
-			DescriptionText.text = SelectedObject.PortalName;
+			PortalNameText.text = SelectedObject.PortalName;
+			PortalDescriptionText.text = SelectedObject.PortalDescription;
 		}
-		else DescriptionText.text = "";
+		else { PortalNameText.text = DefaultName; PortalDescriptionText.text = DefaultDescription; }
 
-		LeanTween.textAlpha(DescriptionText.rectTransform, 1.0f, RotationTime * 0.5f);
+		LeanTween.textAlpha(PortalNameText.rectTransform, 1.0f, RotationTime * 0.5f);
 
 		yield return new WaitForSeconds(RotationTime * 0.5f);
 
