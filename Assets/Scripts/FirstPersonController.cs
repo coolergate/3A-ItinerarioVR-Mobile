@@ -17,10 +17,13 @@ public class FirstPersonController : MonoBehaviour
 	public float MouseSensitivity = 2.0f;
 	private float MouseX = 0.0f, MouseY = 0.0f;
 
-	[Header ("User interface")]
+	[Header ("Interface")]
 	public Image CrosshairImage;
 	public Color CrosshairDefaultColor = new Color(1.0f, 1.0f, 1.0f);
 	public Color CrosshairGazedColor = new Color(1.0f, 0.0f, 0.0f);
+
+	[Space(20)]
+	public Image TransitionImage;
 
 	private ObjectInteractionHandler _currentObjectController;
 
@@ -60,7 +63,17 @@ public class FirstPersonController : MonoBehaviour
 		Cursor.lockState = CursorLockMode.Locked;
 
 		_Controller = GetComponentInParent<CharacterController>();
-	}
+
+		void UpdateTransitionColor(Color c)
+		{
+			TransitionImage.color = c;
+		}
+
+		var current_color = new Color(1, 1, 1, 1);
+		var target_color = new Color(1, 1, 1, 0);
+
+        LeanTween.value(TransitionImage.gameObject, UpdateTransitionColor, current_color, target_color, 1.5f);
+    }
 
 	public void FixedUpdate()
 	{

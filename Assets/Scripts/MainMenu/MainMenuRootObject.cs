@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class MainMenuRootObject : MonoBehaviour
 {
@@ -14,8 +15,12 @@ public class MainMenuRootObject : MonoBehaviour
 	public TextMeshProUGUI PortalNameText;
 	public TextMeshProUGUI PortalDescriptionText;
 
+	[Space(20)]
 	public string DefaultName = "";
 	public string DefaultDescription = "";
+
+	[Space(20)]
+	public Image TransitionImage;
 
 	private int _index = 0;
 	private List<MainMenuPortal> _children_list = new List<MainMenuPortal>();
@@ -65,13 +70,34 @@ public class MainMenuRootObject : MonoBehaviour
 
 		if (_isInputActive && _current_portal_component)
 		{
-			var scene_index = _current_portal_component.SceneIndex;
+			_allowedupdate = false;
 
-			SceneManager.LoadScene(scene_index, LoadSceneMode.Single);
+			StartCoroutine(LoadScene(_current_portal_component.SceneIndex));
 		}
 	}
 
-	private IEnumerator ChangeOption(int direction)
+	private IEnumerator LoadScene(int index)
+	{
+		var current_color = TransitionImage.color;
+		current_color.a = 0;
+
+		var target_color = TransitionImage.color;
+		target_color.a = 1;
+
+		LeanTween.value(TransitionImage.gameObject, UpdateCanvasColor, current_color, target_color, RotationTime * 2);
+
+		yield return new WaitForSeconds(RotationTime * 2 + 2);
+
+        SceneManager.LoadScene(index, LoadSceneMode.Single);
+    }
+
+	private void UpdateTextAlpha(Color c)
+	{
+		PortalNameText.color = c;
+		PortalDescriptionText.color = c;
+	}
+
+    private IEnumerator ChangeOption(int direction)
 	{
 		_allowedupdate = false;
 		LeanTween
@@ -84,7 +110,9 @@ public class MainMenuRootObject : MonoBehaviour
 
 		MainMenuPortal SelectedObject = _children_list[_index];
 
-		LeanTween.textAlpha(PortalNameText.rectTransform, 0.0f, RotationTime * 0.5f);
+        var show_color = new Color(1, 1, 1, 1);
+        var hide_color = new Color(1, 1, 1, 0);
+		LeanTween.value(gameObject, UpdateTextAlpha, show_color, hide_color, RotationTime * 0.5f);
 
 		if (_current_portal_component)
 		{
@@ -105,16 +133,16 @@ public class MainMenuRootObject : MonoBehaviour
 		}
 		else { PortalNameText.text = DefaultName; PortalDescriptionText.text = DefaultDescription; }
 
-		LeanTween.textAlpha(PortalNameText.rectTransform, 1.0f, RotationTime * 0.5f);
+        LeanTween.value(gameObject, UpdateTextAlpha, hide_color, show_color, RotationTime * 0.5f);
 
-		yield return new WaitForSeconds(RotationTime * 0.5f);
+        yield return new WaitForSeconds(RotationTime * 0.5f);
 
 		_current_portal_component = SelectedObject;
 		_allowedupdate = true;
 	}
 
-	void Select()
+	void UpdateCanvasColor(Color c)
 	{
-
+		TransitionImage.color = c;
 	}
 }
