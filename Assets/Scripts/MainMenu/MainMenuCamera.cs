@@ -12,12 +12,12 @@ public class MainMenuCamera : MonoBehaviour
 	private const float _defaultFieldOfView = 60.0f;
 	Camera _Camera;
 
-	[Header ("Root object properties")]
-	public MainMenuRootObject RootObject;
-
 	[Header ("Properties")]
 	public float MouseSensitivity = 2.0f;
 	private float MouseX = 0.0f, MouseY = 0.0f;
+
+	[Header ("Interface")]
+	public Button ToggleVRModeButton;
 
 	private bool _isScreenTouched
 	{
@@ -42,19 +42,18 @@ public class MainMenuCamera : MonoBehaviour
 		Screen.sleepTimeout = SleepTimeout.NeverSleep;
 		Screen.brightness = 1.0f;
 
-		Cursor.visible = true;
-		Cursor.lockState = CursorLockMode.Locked;
+		ToggleVRModeButton.onClick.AddListener(ToggleVR);
 	}
 
 	public void Update()
 	{
-		if (!Application.isMobilePlatform)
+		/*if (!Application.isMobilePlatform)
 		{
 			MouseX += Input.GetAxis("Mouse X") * 2;
 			MouseY -= Input.GetAxis("Mouse Y") * 2;
 
 			transform.eulerAngles = new Vector3(MouseY, MouseX, 0);
-		}
+		}*/
 
 		// Desta linha para frente somente para VR / XR no Android
 		if (!Application.isMobilePlatform) return;
@@ -77,8 +76,16 @@ public class MainMenuCamera : MonoBehaviour
 		}
 	}
 
+	void ToggleVR()
+	{
+		if (_isVrModeEnabled) StopXR();
+		else EnterVR();
+	}
+
 	private void EnterVR()
 	{
+		Debug.Log("Entering VR mode...");
+
 		StartCoroutine(StartXR());
 		if (Api.HasNewDeviceParams())
 		{
@@ -107,6 +114,8 @@ public class MainMenuCamera : MonoBehaviour
 
 	private void StopXR()
 	{
+		Debug.Log("Exiting VR mode");
+
 		Debug.Log("Stopping XR...");
 		XRGeneralSettings.Instance.Manager.StopSubsystems();
 		Debug.Log("XR stopped.");

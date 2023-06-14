@@ -5,6 +5,7 @@ using UnityEngine.Rendering;
 using UnityEngine.XR;
 using UnityEngine.XR.Management;
 using UnityEngine.UI;
+using TMPro;
 
 public class PlayerController : MonoBehaviour
 {
@@ -24,6 +25,7 @@ public class PlayerController : MonoBehaviour
 
 	[Space(20)]
 	public Image TransitionImage;
+	public TextMeshProUGUI CaptionText;
 
 	private ObjectInteractionHandler _currentObjectController;	
 	private Vector3 _current_velocity = new Vector3();
@@ -213,5 +215,10 @@ public class PlayerController : MonoBehaviour
 		}
 
 		return null;
+	}
+
+	void PlayCaption(string index)
+	{
+		
 	}
 }
