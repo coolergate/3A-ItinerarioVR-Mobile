@@ -33,7 +33,7 @@ public class MainMenuRootObject : MonoBehaviour
 	{
 		get
 		{
-			bool physical_input = Input.GetMouseButtonDown(0) || Input.GetButtonDown("Attack1");
+			bool physical_input = Input.GetButtonDown("Activate");
 			bool touch_input = Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began;
 			return physical_input || touch_input;
 		}
@@ -47,6 +47,9 @@ public class MainMenuRootObject : MonoBehaviour
 			_children_list.Add(component);
 
 			LeanTween.alpha(component.PreviewObject, 0.0f, RotationTime * 0.5f);
+			
+			if (UserSettings.CompletedScenes.Contains(component.SceneName))
+				component.PreviewObject.GetComponent<MeshRenderer>().material.color = new Color(1, 0, 0, 0.5f);
 
 			component.PreviewObject.SetActive(false);
 		}

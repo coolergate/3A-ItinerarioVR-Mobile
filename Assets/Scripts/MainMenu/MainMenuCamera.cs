@@ -12,10 +12,6 @@ public class MainMenuCamera : MonoBehaviour
 	private const float _defaultFieldOfView = 60.0f;
 	Camera _Camera;
 
-	[Header ("Properties")]
-	public float MouseSensitivity = 2.0f;
-	private float MouseX = 0.0f, MouseY = 0.0f;
-
 	[Header ("Interface")]
 	public Button ToggleVRModeButton;
 
@@ -47,15 +43,7 @@ public class MainMenuCamera : MonoBehaviour
 
 	public void Update()
 	{
-		/*if (!Application.isMobilePlatform)
-		{
-			MouseX += Input.GetAxis("Mouse X") * 2;
-			MouseY -= Input.GetAxis("Mouse Y") * 2;
-
-			transform.eulerAngles = new Vector3(MouseY, MouseX, 0);
-		}*/
-
-		// Desta linha para frente somente para VR / XR no Android
+		
 		if (!Application.isMobilePlatform) return;
 
 		if (_isVrModeEnabled)
