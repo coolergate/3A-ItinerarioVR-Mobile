@@ -6,7 +6,7 @@ using UnityEngine.XR;
 using UnityEngine.XR.Management;
 using UnityEngine.UI;
 
-public class FirstPersonController : MonoBehaviour
+public class PlayerController : MonoBehaviour
 {
 	private const float _defaultFieldOfView = 60.0f;
 	Camera _Camera;
