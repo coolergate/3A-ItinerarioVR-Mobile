@@ -11,7 +11,7 @@ public class CardboardStartup : MonoBehaviour
 		Screen.brightness = 1.0f; // only works on iOS
 
 		// Adicionar o jogador de outra cena.
-		SceneManager.LoadScene(2, LoadSceneMode.Additive);
+		SceneManager.LoadScene("Player", LoadSceneMode.Additive);
 	}
 
 	public void Update()
@@ -25,15 +25,15 @@ public class CardboardStartup : MonoBehaviour
 			Application.Quit();
 		}
 
-		/*if (Api.IsTriggerHeldPressed)
+		if (Api.IsTriggerHeldPressed)
 		{
 			Api.Recenter();
-		}*/
+		}
 
-		/*if (Api.HasNewDeviceParams())
+		if (Api.HasNewDeviceParams())
 		{
 			Api.ReloadDeviceParams();
-		}*/
+		}
 
 		Api.UpdateScreenParams();
 	}

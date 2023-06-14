@@ -72,11 +72,11 @@ public class MainMenuRootObject : MonoBehaviour
 		{
 			_allowedupdate = false;
 
-			StartCoroutine(LoadScene(_current_portal_component.SceneIndex));
+			StartCoroutine(LoadScene(_current_portal_component.SceneName));
 		}
 	}
 
-	private IEnumerator LoadScene(int index)
+	private IEnumerator LoadScene(string name)
 	{
 		var current_color = TransitionImage.color;
 		current_color.a = 0;
@@ -88,7 +88,7 @@ public class MainMenuRootObject : MonoBehaviour
 
 		yield return new WaitForSeconds(RotationTime * 2 + 2);
 
-        SceneManager.LoadScene(index, LoadSceneMode.Single);
+        SceneManager.LoadScene(name, LoadSceneMode.Single);
     }
 
 	private void UpdateTextAlpha(Color c)
@@ -128,8 +128,8 @@ public class MainMenuRootObject : MonoBehaviour
 			SelectedObject.PreviewObject.SetActive(true);
 			LeanTween.alpha(SelectedObject.PreviewObject, 0.5f, RotationTime * 0.5f);
 
-			PortalNameText.text = SelectedObject.PortalName;
-			PortalDescriptionText.text = SelectedObject.PortalDescription;
+			PortalNameText.text = SelectedObject.InterfaceName;
+			PortalDescriptionText.text = SelectedObject.InterfaceDescription;
 		}
 		else { PortalNameText.text = DefaultName; PortalDescriptionText.text = DefaultDescription; }
 

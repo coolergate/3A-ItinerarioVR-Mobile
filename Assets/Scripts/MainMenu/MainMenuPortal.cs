@@ -5,22 +5,13 @@ using UnityEngine.SceneManagement;
 
 public class MainMenuPortal : MonoBehaviour
 {
-	[Header ("Portal properties")]
-	public string PortalName = "";
-	public string PortalDescription = "";
-	public int SceneIndex;
-
-	[Header ("Preview object properties")]
+	[Header("Properties")]
+	public string SceneName = "";
 	public GameObject PreviewObject;
 
-	private Color _original_color;
-
-	public Color original_color
-	{
-		get {
-			return _original_color;
-		}
-	}
+	[Header("Interface properties")]
+	public string InterfaceName = "";
+	public string InterfaceDescription = "";
 
 	void Start()
 	{

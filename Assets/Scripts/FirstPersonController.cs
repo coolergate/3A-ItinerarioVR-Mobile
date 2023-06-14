@@ -25,7 +25,8 @@ public class FirstPersonController : MonoBehaviour
 	[Space(20)]
 	public Image TransitionImage;
 
-	private ObjectInteractionHandler _currentObjectController;
+	private ObjectInteractionHandler _currentObjectController;	
+	private Vector3 _current_velocity = new Vector3();
 
 	private bool _isScreenTouched
 	{
@@ -87,8 +88,10 @@ public class FirstPersonController : MonoBehaviour
 			Vector3 Direction = Orientation.forward * Vertical + Orientation.right * Horizontal;
 			Direction.y = 0;
 
-			_Controller.Move(Direction * CharacterMovementSpeed * Time.deltaTime);
+			_current_velocity = Vector3.Lerp(_current_velocity, Direction, 0.125f);
 		}
+
+		_Controller.Move(_current_velocity * CharacterMovementSpeed * Time.deltaTime);
 	}
 
 	public void Update()

@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.0008701675, g: 0.00086418324, b: 0.00082051783, a: 1}
+  m_IndirectSpecularColor: {r: 0.0008662385, g: 0.0008602543, b: 0.0008165904, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -416,10 +416,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f24c1bbfd6ab54d4dac8a2988594623b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  PortalName: "Ana L\xFAcia"
-  PortalDescription: "Ana L\xFAcia"
-  SceneIndex: 1
+  SceneName: Player
   PreviewObject: {fileID: 3457119334574066171}
+  InterfaceName: "Ana L\xFAcia"
+  InterfaceDescription: Undefined.
 --- !u!1 &663144187
 GameObject:
   m_ObjectHideFlags: 0
@@ -464,10 +464,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f24c1bbfd6ab54d4dac8a2988594623b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  PortalName: Rodrigo
-  PortalDescription: "Itiner\xE1rio Rodrigo"
-  SceneIndex: 1
+  SceneName: Rodrigo
   PreviewObject: {fileID: 2021270968}
+  InterfaceName: Rodrigo
+  InterfaceDescription: "C\xE1lculo para otimiza\xE7\xE3o de resultados"
 --- !u!1 &788015053
 GameObject:
   m_ObjectHideFlags: 0
@@ -846,10 +846,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f24c1bbfd6ab54d4dac8a2988594623b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  PortalName: Denis
-  PortalDescription: Denis
-  SceneIndex: 1
+  SceneName: Denis
   PreviewObject: {fileID: 5895370589570179382}
+  InterfaceName: Denis
+  InterfaceDescription: Undefined.
 --- !u!1 &1851381216
 GameObject:
   m_ObjectHideFlags: 0
@@ -956,7 +956,7 @@ GameObject:
   - component: {fileID: 1899657688}
   - component: {fileID: 1899657687}
   m_Layer: 5
-  m_Name: WhiteImage
+  m_Name: TransitionImage
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1397,10 +1397,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f24c1bbfd6ab54d4dac8a2988594623b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  PortalName: "La\xEDs"
-  PortalDescription: "La\xEDs"
-  SceneIndex: 1
+  SceneName: Player
   PreviewObject: {fileID: 995743089}
+  InterfaceName: "La\xEDs"
+  InterfaceDescription: Undefined.
 --- !u!4 &543450651612296112
 Transform:
   m_ObjectHideFlags: 0
