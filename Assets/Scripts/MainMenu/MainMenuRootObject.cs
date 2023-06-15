@@ -55,10 +55,12 @@ public class MainMenuRootObject : MonoBehaviour
 			component.PreviewObject.SetActive(false);
 		}
 
-		PortalNameText.text = "Use seu controle para selecionar um módulo";
-		PortalDescriptionText.text = "Mova o analógico para esquerda ou direita";
+		PortalNameText.text = "Use seu controle para selecionar um mï¿½dulo";
+		PortalDescriptionText.text = "Mova o analï¿½gico para esquerda ou direita";
 
-		//StartCoroutine(ChangeOption(1));
+		StartCoroutine(ChangeOption(1));
+
+		
 	}
 
 	// Update is called once per frame
@@ -67,6 +69,12 @@ public class MainMenuRootObject : MonoBehaviour
 		if (!_allowedupdate) return;
 
 		float direction = Input.GetAxis("Horizontal");
+		var left_down = Input.GetKey(KeyCode.LeftArrow);
+		var right_down = Input.GetKey(KeyCode.RightArrow);
+
+		if (left_down) direction -= 1;
+		if (right_down) direction += 1;
+
 
 		if (direction != 0.0f)
 		{

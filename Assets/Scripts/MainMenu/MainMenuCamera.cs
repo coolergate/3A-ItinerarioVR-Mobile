@@ -70,6 +70,8 @@ public class MainMenuCamera : MonoBehaviour
 	public void Update()
 	{
 		
+		EnableVR.gameObject.SetActive(Application.isMobilePlatform && _isVrModeEnabled);
+
 		if (!Application.isMobilePlatform) return;
 
 		if (_isVrModeEnabled)
