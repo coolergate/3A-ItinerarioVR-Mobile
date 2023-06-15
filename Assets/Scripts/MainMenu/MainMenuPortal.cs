@@ -12,13 +12,4 @@ public class MainMenuPortal : MonoBehaviour
 	[Header("Interface properties")]
 	public string InterfaceName = "";
 	public string InterfaceDescription = "";
-
-	void Start()
-	{
-	}
-
-	void Update()
-	{
-
-	}
 }

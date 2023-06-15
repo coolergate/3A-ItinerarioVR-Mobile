@@ -12,10 +12,17 @@ public class MainMenuCamera : MonoBehaviour
 	private const float _defaultFieldOfView = 60.0f;
 	Camera _Camera;
 
-	[Header ("Interface")]
-	public Button ToggleVRModeButton;
+	public MainMenuRootObject RootObject;
 
-	private bool _isScreenTouched
+	[Header ("Interface")]
+	public GameObject NonVRInterfaceHolder;
+
+	public Button EnableVR;
+    public Button Select;
+	public Button Previous;
+    public Button Next;
+
+    private bool _isScreenTouched
 	{
 		get
 		{
@@ -38,7 +45,26 @@ public class MainMenuCamera : MonoBehaviour
 		Screen.sleepTimeout = SleepTimeout.NeverSleep;
 		Screen.brightness = 1.0f;
 
-		ToggleVRModeButton.onClick.AddListener(ToggleVR);
+		EnableVR.onClick.AddListener(ToggleVR);
+		EnableVR.gameObject.SetActive(Application.isMobilePlatform);
+
+		Select.onClick.AddListener(SubmitSelection);
+		Next.onClick.AddListener(SelectRight);
+        Previous.onClick.AddListener(SelectLeft);
+    }
+
+	public void SelectLeft()
+	{
+		RootObject.StartCoroutine(RootObject.ChangeOption(1));
+	}
+    public void SelectRight()
+    {
+        RootObject.StartCoroutine(RootObject.ChangeOption(-1));
+    }
+
+    public void SubmitSelection()
+	{
+		RootObject.StartCoroutine(RootObject.LoadSelectedScene());
 	}
 
 	public void Update()

@@ -1,3 +1,4 @@
+using JetBrains.Annotations;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -54,7 +55,10 @@ public class MainMenuRootObject : MonoBehaviour
 			component.PreviewObject.SetActive(false);
 		}
 
-		StartCoroutine(ChangeOption(1));
+		PortalNameText.text = "Use seu controle para selecionar um módulo";
+		PortalDescriptionText.text = "Mova o analógico para esquerda ou direita";
+
+		//StartCoroutine(ChangeOption(1));
 	}
 
 	// Update is called once per frame
@@ -75,11 +79,11 @@ public class MainMenuRootObject : MonoBehaviour
 		{
 			_allowedupdate = false;
 
-			StartCoroutine(LoadScene(_current_portal_component.SceneName));
+			StartCoroutine(LoadSelectedScene());
 		}
 	}
 
-	private IEnumerator LoadScene(string name)
+	public IEnumerator LoadSelectedScene()
 	{
 		var current_color = TransitionImage.color;
 		current_color.a = 0;
@@ -91,7 +95,7 @@ public class MainMenuRootObject : MonoBehaviour
 
 		yield return new WaitForSeconds(RotationTime * 2 + 2);
 
-        SceneManager.LoadScene(name, LoadSceneMode.Single);
+        SceneManager.LoadScene(_current_portal_component.SceneName, LoadSceneMode.Single);
     }
 
 	private void UpdateTextAlpha(Color c)
@@ -100,7 +104,7 @@ public class MainMenuRootObject : MonoBehaviour
 		PortalDescriptionText.color = c;
 	}
 
-    private IEnumerator ChangeOption(int direction)
+    public IEnumerator ChangeOption(int direction)
 	{
 		_allowedupdate = false;
 		LeanTween
