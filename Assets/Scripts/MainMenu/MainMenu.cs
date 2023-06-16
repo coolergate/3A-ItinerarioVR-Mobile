@@ -19,6 +19,8 @@ public class MainMenu : MonoBehaviour
 
 	[Header("Interface")]
 	public Image TransitionImage;
+
+	[Space(20)]
 	public Button PlayButton;
 	public Button SettingsButton;
 
