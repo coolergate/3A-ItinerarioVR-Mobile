@@ -30,7 +30,7 @@ public class MainMenu : MonoBehaviour
         }
         else
         {
-            if (_isScreenTouched) EnterVR();
+            if (UserSettings.isScreenBeingTouched) EnterVR();
         }
     }
 

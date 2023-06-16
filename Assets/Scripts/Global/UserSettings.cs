@@ -15,7 +15,7 @@ public class UserSettings : MonoBehaviour
         }
     }
 
-    public static bool isScreenTouched
+    public static bool isScreenBeingTouched
     {
         get
         {
