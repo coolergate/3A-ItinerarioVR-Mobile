@@ -22,4 +22,6 @@ public class UserSettings : MonoBehaviour
             return Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began;
         }
     }
+
+    public static bool RunningFirstTime = true;
 }

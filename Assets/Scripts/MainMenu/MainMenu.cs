@@ -11,20 +11,22 @@ public class MainMenu : MonoBehaviour
 {
 	private const float _defaultFieldOfView = 60.0f;
 	private Camera _Camera;
+	private bool _allowed_update = true;
 
 	[Header("Properties")]
 	public string FirstSceneName = "";
 
-	[Space(20)]
+	[Space(10)]
 
 	[Header("Interface")]
 	public Image TransitionImage;
 
-	[Space(20)]
+	[Space(10)]
+	public TextMeshProUGUI MobileDescriptionText;
+
+	[Space(10)]
 	public Button PlayButton;
 	public Button SettingsButton;
-
-	private bool RunningFirstTime = true;
 
 	public void Start()
 	{
@@ -34,30 +36,41 @@ public class MainMenu : MonoBehaviour
 		Screen.brightness = 1.0f;
 
 		PlayButton.onClick.AddListener(EnterScene);
+		MobileDescriptionText.gameObject.SetActive(Application.isMobilePlatform && UserSettings.VR_Enabled);
 	}
 
 	public void Update()
 	{
+		if (!_allowed_update) return;
 
-		if (!Application.isMobilePlatform) return;
-
-		if (UserSettings.VR_Enabled)
+		if (Application.isMobilePlatform)
 		{
-			if (Api.IsCloseButtonPressed) StopXR();
+			if (UserSettings.VR_Enabled)
+			{
+				if (Api.IsCloseButtonPressed) StopXR();
 
-			Api.UpdateScreenParams();
-		}
-		else
-		{
-			if (UserSettings.isScreenBeingTouched) EnterVR();
+				Api.UpdateScreenParams();
+			}
+			else
+			{
+				if (UserSettings.isScreenBeingTouched) EnterVR();
+			}
+
+			if (UserSettings.RunningFirstTime && UserSettings.VR_Enabled)
+			{
+				UserSettings.RunningFirstTime = false;
+				StopXR();
+			}
 		}
 
-		if (RunningFirstTime && UserSettings.VR_Enabled)
+
+		if (Input.GetKey(KeyCode.Space) || Input.GetKey(KeyCode.Joystick1Button4))
 		{
-			RunningFirstTime = false;
-			StopXR();
+			_allowed_update = false;
+
+			EnterScene();
 		}
-	}
+    }
 
 	private void EnterScene()
 	{
