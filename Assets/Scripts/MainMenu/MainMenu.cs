@@ -11,22 +11,70 @@ public class MainMenu : MonoBehaviour
 {
 	private const float _defaultFieldOfView = 60.0f;
 	private Camera _Camera;
-	private bool _allowed_update = true;
+	private bool _allowed_update = false;
 
 	[Header("Properties")]
 	public string FirstSceneName = "";
 
+    [Space(10)]
+    public GameObject AnimationObject;
+	public Vector3 AnimatedObjectPosition;
+
 	[Space(10)]
 
 	[Header("Interface")]
-	public Image TransitionImage;
+	public string MobileVRHintText = "";
+	public string NonVRHintText = "";
 
 	[Space(10)]
-	public TextMeshProUGUI MobileDescriptionText;
+	public GameObject IntroCanvas1;
+    public GameObject IntroCanvas2;
+    public Image TransitionImage;
+	public TextMeshProUGUI HintText;
 
-	[Space(10)]
-	public Button PlayButton;
-	public Button SettingsButton;
+	private IEnumerator InitStage()
+	{
+        while (true)
+        {
+            if (Input.GetKey(KeyCode.Space) || Input.GetKey(KeyCode.Return) || Input.GetKey(KeyCode.Joystick1Button4)) break;
+            yield return new WaitForEndOfFrame();
+        }
+
+        _allowed_update = true;
+
+		foreach (TextMeshProUGUI text in IntroCanvas1.GetComponentsInChildren<TextMeshProUGUI>())
+		{
+			void UpdateColor(Color c)
+			{
+				text.color = c;
+			}
+
+            LeanTween.value(text.gameObject, UpdateColor, new Color(1, 1, 1, 1), new Color(1, 1, 1, 0), 0.5f);
+        }
+
+		LeanTween.move(AnimationObject, AnimatedObjectPosition, 2f).setEase(LeanTweenType.easeInOutSine);
+
+		yield return new WaitForSeconds(3f);
+
+
+        foreach (TextMeshProUGUI text in IntroCanvas2.GetComponentsInChildren<TextMeshProUGUI>())
+        {
+            void UpdateColor(Color c)
+            {
+                text.color = c;
+            }
+
+            LeanTween.value(text.gameObject, UpdateColor, new Color(1f, 1f, 1f, 0f), new Color(1f, 1f, 1f, 1f), 0.5f);
+        }
+
+        while (true)
+        {
+            if (Input.GetKey(KeyCode.Space) || Input.GetKey(KeyCode.Return) || Input.GetKey(KeyCode.Joystick1Button4)) break;
+            yield return new WaitForEndOfFrame();
+        }
+
+        StartCoroutine(StartStory());
+    }
 
 	public void Start()
 	{
@@ -35,8 +83,14 @@ public class MainMenu : MonoBehaviour
 		Screen.sleepTimeout = SleepTimeout.NeverSleep;
 		Screen.brightness = 1.0f;
 
-		PlayButton.onClick.AddListener(EnterScene);
-		MobileDescriptionText.gameObject.SetActive(Application.isMobilePlatform && UserSettings.VR_Enabled);
+		if (Application.isMobilePlatform)
+			HintText.text = MobileVRHintText;
+		else
+			HintText.text = NonVRHintText;
+
+		//MobileDescriptionText.gameObject.SetActive(Application.isMobilePlatform && UserSettings.VR_Enabled);
+
+		StartCoroutine(InitStage());
 	}
 
 	public void Update()
@@ -62,20 +116,7 @@ public class MainMenu : MonoBehaviour
 				StopXR();
 			}
 		}
-
-
-		if (Input.GetKey(KeyCode.Space) || Input.GetKey(KeyCode.Joystick1Button4))
-		{
-			_allowed_update = false;
-
-			EnterScene();
-		}
     }
-
-	private void EnterScene()
-	{
-		StartCoroutine(StartStory());
-	}
 
 	private IEnumerator StartStory()
 	{
