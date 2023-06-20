@@ -95,6 +95,11 @@ public class MainMenu : MonoBehaviour
 
 	public void Update()
 	{
+		if (Api.IsGearButtonPressed)
+		{
+			SceneManager.LoadScene("Home"); // debug menu
+		}
+
 		if (!_allowed_update) return;
 
 		if (Application.isMobilePlatform)
