@@ -5,13 +5,17 @@ using UnityEngine.SceneManagement;
 
 public class CardboardStartup : MonoBehaviour
 {
+	public Vector3 PlayerStartingPosition = Vector3.zero;
+
 	public void Start()
 	{
 		Screen.sleepTimeout = SleepTimeout.NeverSleep;
 		Screen.brightness = 1.0f; // only works on iOS
 
 		// Adicionar o jogador de outra cena.
+		UserSettings.PlayerStartingPosition = PlayerStartingPosition;
 		SceneManager.LoadScene("Player", LoadSceneMode.Additive);
+
 	}
 
 	public void Update()

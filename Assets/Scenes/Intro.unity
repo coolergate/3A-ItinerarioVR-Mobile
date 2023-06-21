@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.0008701675, g: 0.00086418324, b: 0.00082051783, a: 1}
+  m_IndirectSpecularColor: {r: 0.0008662385, g: 0.0008602543, b: 0.0008165904, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -494,8 +494,8 @@ MonoBehaviour:
   FirstSceneName: Rodrigo
   AnimationObject: {fileID: 1660510219}
   AnimatedObjectPosition: {x: 0, y: -20, z: 25}
-  MobileVRHintText: pressione [ C ]
-  NonVRHintText: pressione [ enter ]
+  MobileVRHintText: Pressione [ C ] para continuar
+  NonVRHintText: Pressione a tela para continuar
   IntroCanvas1: {fileID: 1816936797}
   IntroCanvas2: {fileID: 132990634}
   TransitionImage: {fileID: 2024008128}

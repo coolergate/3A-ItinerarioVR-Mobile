@@ -36,7 +36,7 @@ public class MainMenu : MonoBehaviour
 	{
         while (true)
         {
-            if (Input.GetKey(KeyCode.Space) || Input.GetKey(KeyCode.Return) || Input.GetKey(KeyCode.Joystick1Button4)) break;
+            if (Input.GetKey(KeyCode.Space) || Input.GetKey(KeyCode.Return) || Input.GetKey(KeyCode.Joystick1Button4) || Input.GetMouseButton(0)) break;
             yield return new WaitForEndOfFrame();
         }
 
@@ -69,11 +69,26 @@ public class MainMenu : MonoBehaviour
 
         while (true)
         {
-            if (Input.GetKey(KeyCode.Space) || Input.GetKey(KeyCode.Return) || Input.GetKey(KeyCode.Joystick1Button4)) break;
+            if (Input.GetKey(KeyCode.Space) || Input.GetKey(KeyCode.Return) || Input.GetKey(KeyCode.Joystick1Button4) || Input.GetMouseButton(0)) break;
             yield return new WaitForEndOfFrame();
         }
 
-        StartCoroutine(StartStory());
+        var current_color = TransitionImage.color;
+        current_color.a = 0;
+
+        var target_color = TransitionImage.color;
+        target_color.a = 1;
+
+        void UpdateTransitionColor(Color color)
+        {
+            TransitionImage.color = color;
+        }
+
+        LeanTween.value(TransitionImage.gameObject, UpdateTransitionColor, current_color, target_color, 0.5f);
+
+        yield return new WaitForSeconds(1);
+
+        SceneManager.LoadScene(FirstSceneName);
     }
 
 	public void Start()
@@ -95,11 +110,6 @@ public class MainMenu : MonoBehaviour
 
 	public void Update()
 	{
-		if (Api.IsGearButtonPressed)
-		{
-			SceneManager.LoadScene("Home"); // debug menu
-		}
-
 		if (!_allowed_update) return;
 
 		if (Application.isMobilePlatform)
@@ -122,26 +132,6 @@ public class MainMenu : MonoBehaviour
 			}
 		}
     }
-
-	private IEnumerator StartStory()
-	{
-        var current_color = TransitionImage.color;
-        current_color.a = 0;
-
-        var target_color = TransitionImage.color;
-        target_color.a = 1;
-
-		void UpdateTransitionColor(Color color)
-		{
-			TransitionImage.color = color;	
-		}
-
-		LeanTween.value(TransitionImage.gameObject, UpdateTransitionColor, current_color, target_color, 0.5f);
-
-        yield return new WaitForSeconds(1);
-
-        SceneManager.LoadScene(FirstSceneName);
-	}
 
 	private void EnterVR()
 	{

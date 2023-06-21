@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Timeline;
 using UnityEngine.XR.Management;
 
 public class UserSettings : MonoBehaviour
@@ -24,4 +25,6 @@ public class UserSettings : MonoBehaviour
     }
 
     public static bool RunningFirstTime = true;
+    public static WorldAnimation CurrentWorldAnimationInstance;
+    public static Vector3 PlayerStartingPosition = Vector3.zero;
 }
