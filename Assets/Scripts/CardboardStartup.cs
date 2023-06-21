@@ -20,14 +20,6 @@ public class CardboardStartup : MonoBehaviour
 
 	public void Update()
 	{
-
-		if (Input.GetButtonDown("Back"))
-		{
-			UserSettings.CompletedScenes.Add(SceneManager.GetActiveScene().name);
-			SceneManager.LoadScene("Home", LoadSceneMode.Single);
-		}
-
-		//if (SystemInfo.graphicsDeviceType != GraphicsDeviceType.OpenGLES3) return;
 		if (!Application.isMobilePlatform) return;
 
 		if (Api.IsCloseButtonPressed)
