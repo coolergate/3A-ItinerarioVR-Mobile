@@ -1,7 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Timeline;
+using UnityEngine.Events;
 using UnityEngine.XR.Management;
 
 public class UserSettings : MonoBehaviour
@@ -23,10 +21,12 @@ public class UserSettings : MonoBehaviour
     }
 
     public static bool RunningFirstTime = true;
-    public static WorldAnimation CurrentWorldAnimationInstance;
 
     public static string next_scene_title = "UndefinedSceneName";
 
     public static Vector3 PlayerStartingPosition = new Vector3(0, 1, 0);
     public static PlayerController CurrentPlayerController;
+
+    public static UnityEvent TransitionEnded = new UnityEvent();
+    public static UnityEvent FadeoutScreen = new UnityEvent();
 }

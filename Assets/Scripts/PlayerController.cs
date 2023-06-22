@@ -68,8 +68,16 @@ public class PlayerController : MonoBehaviour
         TransitionImage.color = new Color(0, 0, 0, 1);
         CrosshairImage.color = new Color(1, 1, 1, 0);
 
+        TransitionCaptionText.text = UserSettings.next_scene_title;
+
         UserSettings.CurrentPlayerController = this;
-        GetComponentInParent<Transform>().position = UserSettings.PlayerStartingPosition;
+        transform.parent.transform.position = UserSettings.PlayerStartingPosition;
+
+        void StartFadeout()
+        {
+            StartCoroutine(FadeoutScreen());
+        }
+        UserSettings.FadeoutScreen.AddListener(StartFadeout);
 
         yield return new WaitForSeconds(2);
 
@@ -112,11 +120,12 @@ public class PlayerController : MonoBehaviour
 
         yield return new WaitForSeconds(1f);
 
-        if (CurrentWorldController != null) CurrentWorldController.PlaySounds();
+        UserSettings.TransitionEnded.Invoke();
     }
 
     public IEnumerator FadeoutScreen()
     {
+        Debug.Log("Starting fadeout");
         void UpdateTransitionColor(Color c)
         {
             TransitionImage.color = c;
@@ -137,7 +146,7 @@ public class PlayerController : MonoBehaviour
 
             Transform Orientation = Camera.main.transform;
             Vector3 Direction = Orientation.forward * Vertical + Orientation.right * Horizontal;
-            Direction.y = 0;
+            Direction.y = -0.25f;
 
             _current_velocity = Vector3.Lerp(_current_velocity, Direction, 0.125f);
         }
@@ -153,6 +162,7 @@ public class PlayerController : MonoBehaviour
             MouseY -= Input.GetAxis("Mouse Y") * 2;
 
             transform.eulerAngles = new Vector3(MouseY, MouseX, 0);
+            transform.SetLocalPositionAndRotation(new Vector3(), transform.rotation);
         }
 
         // Raycast para interagir com os objetos da cena
@@ -250,5 +260,14 @@ public class PlayerController : MonoBehaviour
         }
 
         return null;
+    }
+
+    public IEnumerator PlayAudios(GameObject parent)
+    {
+        foreach (var Sound in parent.GetComponentsInChildren<AudioSource>())
+        {
+            Sound.Play();
+            yield return new WaitForSeconds(Sound.clip.length);
+        }
     }
 }

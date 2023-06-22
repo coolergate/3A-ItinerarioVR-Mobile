@@ -12,14 +12,17 @@ EditorBuildSettings:
     path: Assets/Scenes/Player.unity
     guid: ecd35780640c615498110e8eeb19350f
   - enabled: 1
-    path: Assets/Scenes/Rodrigo.unity
-    guid: 7b22d09205ad8cc40a1f10217b4ba65b
-  - enabled: 1
-    path: Assets/Scenes/AnaLucia.unity
-    guid: dfc799090664f054181f470fcc5de278
-  - enabled: 1
     path: Assets/Scenes/BiodiversidadeEQualidadeDeVida.unity
     guid: 0a4cf4f6748725849885561b19f9bf40
+  - enabled: 1
+    path: Assets/Scenes/MovimentoMecanicoDeMaquinasSimples.unity
+    guid: 682eae25708f2234bac1fb1a18b859fa
+  - enabled: 1
+    path: Assets/Scenes/ProducaoSustentavel.unity
+    guid: 7b22d09205ad8cc40a1f10217b4ba65b
+  - enabled: 1
+    path: Assets/Scenes/TecnologiaEAmbiente.unity
+    guid: dfc799090664f054181f470fcc5de278
   m_configObjects:
     com.unity.input.settings: {fileID: 11400000, guid: 87a4d62752e4a26478834c3872c027af, type: 2}
     com.unity.xr.management.loader_settings: {fileID: 11400000, guid: 7e04099d1ba164b4db95fae55659f4dd, type: 2}
