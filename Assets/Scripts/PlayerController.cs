@@ -11,6 +11,9 @@ public class PlayerController : MonoBehaviour
     Camera _Camera;
     CharacterController _Controller;
 
+    public static bool MovementEnabled = true;
+    public static CardboardStartup CurrentWorldController;
+
     [Header("Properties")]
     public float CharacterMovementSpeed = 10.0f;
     public float MouseSensitivity = 2.0f;
@@ -23,21 +26,14 @@ public class PlayerController : MonoBehaviour
 
     [Space(20)]
     public Image TransitionImage;
-    public TextMeshProUGUI CaptionText;
+    public TextMeshProUGUI TransitionCaptionText;
 
     [Header("Properties")]
-    public GameObject AudiosObjects;
+    public AudioSource TransitionAudio;
 
     private ObjectInteractionHandler _currentObjectController;
     private Vector3 _current_velocity = new Vector3();
 
-    private bool _isScreenTouched
-    {
-        get
-        {
-            return Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began;
-        }
-    }
     private bool _isInputActive
     {
         get
@@ -56,7 +52,7 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    public void Start()
+    public IEnumerator Start()
     {
         _Camera = Camera.main;
 
@@ -68,22 +64,71 @@ public class PlayerController : MonoBehaviour
 
         _Controller = GetComponentInParent<CharacterController>();
 
+        TransitionCaptionText.color = new Color(0, 0, 0, 0);
+        TransitionImage.color = new Color(0, 0, 0, 1);
+        CrosshairImage.color = new Color(1, 1, 1, 0);
+
+        UserSettings.CurrentPlayerController = this;
+        GetComponentInParent<Transform>().position = UserSettings.PlayerStartingPosition;
+
+        yield return new WaitForSeconds(2);
+
+        StartCoroutine(StartTransition());
+    }
+
+    public IEnumerator StartTransition()
+    {
+        TransitionAudio.Play();
+        Destroy(gameObject.GetComponent<AudioListener>(), TransitionAudio.clip.length);
+
         void UpdateTransitionColor(Color c)
         {
             TransitionImage.color = c;
         }
+        void UpdateCaptionColor(Color c)
+        {
+            TransitionCaptionText.color = c;
+        }
+        void UpdateCrosshaircolor(Color c)
+        {
+            CrosshairImage.color = c;
+        }
 
-        var current_color = new Color(1, 1, 1, 1);
-        var target_color = new Color(1, 1, 1, 0);
+        LeanTween.value(TransitionImage.gameObject, UpdateTransitionColor, new Color(0, 0, 0, 1), new Color(1, 1, 1, 1), 1f);
 
-        LeanTween.value(TransitionImage.gameObject, UpdateTransitionColor, current_color, target_color, 1.5f);
+        yield return new WaitForSeconds(1.825f);
 
-        GetComponentInParent<Transform>().position = UserSettings.PlayerStartingPosition;
+        TransitionCaptionText.color = new Color(0, 0, 0, 1);
+
+        yield return new WaitForSeconds(0.5f);
+
+        LeanTween.value(TransitionImage.gameObject, UpdateTransitionColor, new Color(1, 1, 1, 1), new Color(1, 1, 1, 0), 1f);
+        LeanTween.value(TransitionCaptionText.gameObject, UpdateCaptionColor, new Color(0, 0, 0, 1), new Color(1, 1, 1, 1), 1f);
+
+        yield return new WaitForSeconds(6f);
+
+        LeanTween.value(TransitionCaptionText.gameObject, UpdateCaptionColor, new Color(1, 1, 1, 1), new Color(1, 1, 1, 0), 2f);
+        LeanTween.value(CrosshairImage.gameObject, UpdateCrosshaircolor, new Color(1, 1, 1, 0), new Color(1, 1, 1, 1), 0.5f);
+
+        yield return new WaitForSeconds(1f);
+
+        if (CurrentWorldController != null) CurrentWorldController.PlaySounds();
+    }
+
+    public IEnumerator FadeoutScreen()
+    {
+        void UpdateTransitionColor(Color c)
+        {
+            TransitionImage.color = c;
+        }
+        LeanTween.value(TransitionImage.gameObject, UpdateTransitionColor, new Color(0, 0, 0, 0), new Color(0, 0, 0, 1), 1f);
+
+        yield return new WaitForSeconds(2f);
     }
 
     public void FixedUpdate()
     {
-        if (_Controller == null) return;
+        if (_Controller == null || !MovementEnabled) return;
 
         if (Camera.main != null)
         {
@@ -139,22 +184,8 @@ public class PlayerController : MonoBehaviour
 
         if (Application.isMobilePlatform)
         {
-            if (_isVrModeEnabled)
-            {
-                if (Api.IsCloseButtonPressed) StopXR();
-
-                /*if (Api.IsGearButtonPressed)
-                {
-                    Api.ScanDeviceParams();	
-                }*/
-
-                Api.UpdateScreenParams();
-            }
-            else
-            {
-                // TODO(b/171727815): Add a button to switch to VR mode.
-                if (_isScreenTouched) EnterVR();
-            }
+            if (!_isVrModeEnabled) EnterVR();
+            else Api.UpdateScreenParams();
         }
     }
 
@@ -219,22 +250,5 @@ public class PlayerController : MonoBehaviour
         }
 
         return null;
-    }
-
-    private IEnumerator LoadAudioSources()
-    {
-        yield return new WaitForSeconds(3);
-
-        foreach (var companion in AudiosObjects.GetComponentsInChildren<AudioCompanion>())
-        {
-            if (companion.clip != null)
-            {
-                companion.audioSource.clip = companion.clip;
-                companion.audioSource.Play();
-                yield return new WaitForSeconds(companion.clip.length);
-            }
-
-            continue;
-        }
     }
 }

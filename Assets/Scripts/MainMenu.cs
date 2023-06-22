@@ -11,7 +11,6 @@ public class MainMenu : MonoBehaviour
 {
 	private const float _defaultFieldOfView = 60.0f;
 	private Camera _Camera;
-	private bool _allowed_update = false;
 
 	[Header("Properties")]
 	public string FirstSceneName = "";
@@ -36,7 +35,7 @@ public class MainMenu : MonoBehaviour
 	{
 		get
 		{
-			return Input.GetKey(KeyCode.JoystickButton4) || Input.GetMouseButton(0);
+			return Input.GetKey(KeyCode.JoystickButton4) || Input.GetKey(KeyCode.Mouse0) || Input.GetKey(KeyCode.Space);
 		}
 	}
 
@@ -48,7 +47,6 @@ public class MainMenu : MonoBehaviour
             yield return new WaitForEndOfFrame();
         }
 
-        _allowed_update = true;
 
 		foreach (TextMeshProUGUI text in IntroCanvas1.GetComponentsInChildren<TextMeshProUGUI>())
 		{
@@ -81,21 +79,16 @@ public class MainMenu : MonoBehaviour
             yield return new WaitForEndOfFrame();
         }
 
-        var current_color = TransitionImage.color;
-        current_color.a = 0;
-
-        var target_color = TransitionImage.color;
-        target_color.a = 1;
-
         void UpdateTransitionColor(Color color)
         {
             TransitionImage.color = color;
         }
 
-        LeanTween.value(TransitionImage.gameObject, UpdateTransitionColor, current_color, target_color, 0.5f);
+        LeanTween.value(TransitionImage.gameObject, UpdateTransitionColor, new Color(0, 0, 0, 0), new Color(0, 0, 0, 1), 0.5f);
 
         yield return new WaitForSeconds(1);
 
+		UserSettings.next_scene_title = "Biodiversidade e Qualidade de vida";
         SceneManager.LoadScene(FirstSceneName);
     }
 
@@ -106,10 +99,6 @@ public class MainMenu : MonoBehaviour
 		Screen.sleepTimeout = SleepTimeout.NeverSleep;
 		Screen.brightness = 1.0f;
 
-		//MobileDescriptionText.gameObject.SetActive(Application.isMobilePlatform && UserSettings.VR_Enabled);
-
-		if (Application.isMobilePlatform)
-
 		StartCoroutine(InitStage());
 	}
 
@@ -119,8 +108,6 @@ public class MainMenu : MonoBehaviour
             HintText.text = MobileVRHintText;
         else
             HintText.text = NonVRHintText;
-
-        if (!_allowed_update) return;
 
 		if (Application.isMobilePlatform)
 		{
@@ -136,10 +123,7 @@ public class MainMenu : MonoBehaviour
 			}
 
 			if (UserSettings.RunningFirstTime)
-			{
 				UserSettings.RunningFirstTime = false;
-				StopXR();
-			}
 		}
     }
 

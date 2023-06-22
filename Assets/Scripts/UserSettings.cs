@@ -6,8 +6,6 @@ using UnityEngine.XR.Management;
 
 public class UserSettings : MonoBehaviour
 {
-	public static List<string> CompletedScenes = new List<string>();
-
     public static bool VR_Enabled
     {
         get
@@ -26,5 +24,9 @@ public class UserSettings : MonoBehaviour
 
     public static bool RunningFirstTime = true;
     public static WorldAnimation CurrentWorldAnimationInstance;
-    public static Vector3 PlayerStartingPosition = Vector3.zero;
+
+    public static string next_scene_title = "UndefinedSceneName";
+
+    public static Vector3 PlayerStartingPosition = new Vector3(0, 1, 0);
+    public static PlayerController CurrentPlayerController;
 }
