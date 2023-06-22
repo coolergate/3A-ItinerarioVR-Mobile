@@ -494,8 +494,8 @@ MonoBehaviour:
   FirstSceneName: Rodrigo
   AnimationObject: {fileID: 1660510219}
   AnimatedObjectPosition: {x: 0, y: -20, z: 25}
-  MobileVRHintText: Pressione [ C ] para continuar
-  NonVRHintText: Pressione a tela para continuar
+  MobileVRHintText: Pressione R1
+  NonVRHintText: Toque a tela
   IntroCanvas1: {fileID: 1816936797}
   IntroCanvas2: {fileID: 132990634}
   TransitionImage: {fileID: 2024008128}

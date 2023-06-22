@@ -78,7 +78,7 @@ public class PlayerController : MonoBehaviour
 
         LeanTween.value(TransitionImage.gameObject, UpdateTransitionColor, current_color, target_color, 1.5f);
 
-        gameObject.transform.parent.transform.position = UserSettings.PlayerStartingPosition;
+        GetComponentInParent<Transform>().position = UserSettings.PlayerStartingPosition;
     }
 
     public void FixedUpdate()

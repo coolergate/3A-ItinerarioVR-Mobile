@@ -32,11 +32,19 @@ public class MainMenu : MonoBehaviour
     public Image TransitionImage;
 	public TextMeshProUGUI HintText;
 
+	private bool _InputActive
+	{
+		get
+		{
+			return Input.GetKey(KeyCode.JoystickButton4) || Input.GetMouseButton(0);
+		}
+	}
+
 	private IEnumerator InitStage()
 	{
         while (true)
         {
-            if (Input.GetKey(KeyCode.Space) || Input.GetKey(KeyCode.Return) || Input.GetKey(KeyCode.Joystick1Button4) || Input.GetMouseButton(0)) break;
+            if (_InputActive) break;
             yield return new WaitForEndOfFrame();
         }
 
@@ -69,7 +77,7 @@ public class MainMenu : MonoBehaviour
 
         while (true)
         {
-            if (Input.GetKey(KeyCode.Space) || Input.GetKey(KeyCode.Return) || Input.GetKey(KeyCode.Joystick1Button4) || Input.GetMouseButton(0)) break;
+            if (_InputActive) break;
             yield return new WaitForEndOfFrame();
         }
 
@@ -98,19 +106,21 @@ public class MainMenu : MonoBehaviour
 		Screen.sleepTimeout = SleepTimeout.NeverSleep;
 		Screen.brightness = 1.0f;
 
-		if (Application.isMobilePlatform)
-			HintText.text = MobileVRHintText;
-		else
-			HintText.text = NonVRHintText;
-
 		//MobileDescriptionText.gameObject.SetActive(Application.isMobilePlatform && UserSettings.VR_Enabled);
+
+		if (Application.isMobilePlatform)
 
 		StartCoroutine(InitStage());
 	}
 
 	public void Update()
 	{
-		if (!_allowed_update) return;
+        if (Application.isMobilePlatform && Input.GetJoystickNames().Length > 0)
+            HintText.text = MobileVRHintText;
+        else
+            HintText.text = NonVRHintText;
+
+        if (!_allowed_update) return;
 
 		if (Application.isMobilePlatform)
 		{
@@ -125,7 +135,7 @@ public class MainMenu : MonoBehaviour
 				if (UserSettings.isScreenBeingTouched) EnterVR();
 			}
 
-			if (UserSettings.RunningFirstTime && UserSettings.VR_Enabled)
+			if (UserSettings.RunningFirstTime)
 			{
 				UserSettings.RunningFirstTime = false;
 				StopXR();
