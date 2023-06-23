@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.1802839, g: 0.22571456, b: 0.30692232, a: 1}
+  m_IndirectSpecularColor: {r: 0.18028411, g: 0.2257149, b: 0.3069226, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -97,7 +97,7 @@ LightmapSettings:
     m_ExportTrainingData: 0
     m_TrainingDataDestination: TrainingData
     m_LightProbeSampleCountMultiplier: 4
-  m_LightingDataAsset: {fileID: 112000000, guid: 28f120873d4d64c438b9798fa7496fc1, type: 2}
+  m_LightingDataAsset: {fileID: 112000000, guid: 3f2019cadd57d154ba3ac91798cca804, type: 2}
   m_LightingSettings: {fileID: 4890085278179872738, guid: 8cd48816419d8ac4ca2b03bd54c1b97f, type: 2}
 --- !u!196 &4
 NavMeshSettings:
@@ -9318,7 +9318,7 @@ MonoBehaviour:
   PlayerStartingPosition: {x: 0, y: 1, z: 3}
   SoundsParent: {fileID: 1070228040}
   CurrentSceneCaption: "Produ\xE7\xE3o Sustent\xE1vel"
-  NextSceneName: TecnologiaEAmbiente
+  NextSceneName: LuzESustentabilidade
 --- !u!1 &1070228040
 GameObject:
   m_ObjectHideFlags: 0

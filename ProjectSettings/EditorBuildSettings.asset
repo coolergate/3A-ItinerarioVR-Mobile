@@ -15,6 +15,12 @@ EditorBuildSettings:
     path: Assets/Scenes/BiodiversidadeEQualidadeDeVida.unity
     guid: 0a4cf4f6748725849885561b19f9bf40
   - enabled: 1
+    path: Assets/Scenes/LuzESustentabilidade.unity
+    guid: 667e747721577a84fa78416d3992b855
+  - enabled: 1
+    path: Assets/Scenes/Mineiracao.unity
+    guid: 1249fe6c35cdb644eb0965ec33d25e45
+  - enabled: 1
     path: Assets/Scenes/MovimentoMecanicoDeMaquinasSimples.unity
     guid: 682eae25708f2234bac1fb1a18b859fa
   - enabled: 1

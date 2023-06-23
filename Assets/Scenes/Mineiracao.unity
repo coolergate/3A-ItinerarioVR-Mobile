@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.18028334, g: 0.2257134, b: 0.30692226, a: 1}
+  m_IndirectSpecularColor: {r: 0.18028352, g: 0.22571376, b: 0.30692244, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -4779,11 +4779,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   LoadPlayerScene: 1
-  PlayerMovementEnabled: 0
+  PlayerMovementEnabled: 1
   PlayerStartingPosition: {x: 0, y: 2, z: 0}
   SoundsParent: {fileID: 582157888}
   CurrentSceneCaption: "Mineira\xE7\xE3o e Res\xEDduos Eletr\xF4nicos"
-  NextSceneName: 
+  NextSceneName: Intro
 --- !u!1 &522245448
 GameObject:
   m_ObjectHideFlags: 0

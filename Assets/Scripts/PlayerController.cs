@@ -19,11 +19,6 @@ public class PlayerController : MonoBehaviour
     public float MouseSensitivity = 2.0f;
     private float MouseX = 0.0f, MouseY = 0.0f;
 
-    [Header("Interface")]
-    public Image CrosshairImage;
-    public Color CrosshairDefaultColor = new Color(1.0f, 1.0f, 1.0f);
-    public Color CrosshairGazedColor = new Color(1.0f, 0.0f, 0.0f);
-
     [Space(20)]
     public Image TransitionImage;
     public TextMeshProUGUI TransitionCaptionText;
@@ -66,7 +61,6 @@ public class PlayerController : MonoBehaviour
 
         TransitionCaptionText.color = new Color(0, 0, 0, 0);
         TransitionImage.color = new Color(0, 0, 0, 1);
-        CrosshairImage.color = new Color(1, 1, 1, 0);
 
         TransitionCaptionText.text = UserSettings.next_scene_title;
 
@@ -86,7 +80,7 @@ public class PlayerController : MonoBehaviour
 
     public IEnumerator StartTransition()
     {
-        TransitionAudio.Play();
+        if (Application.isMobilePlatform) TransitionAudio.Play();
         Destroy(gameObject.GetComponent<AudioListener>(), TransitionAudio.clip.length);
 
         void UpdateTransitionColor(Color c)
@@ -96,10 +90,6 @@ public class PlayerController : MonoBehaviour
         void UpdateCaptionColor(Color c)
         {
             TransitionCaptionText.color = c;
-        }
-        void UpdateCrosshaircolor(Color c)
-        {
-            CrosshairImage.color = c;
         }
 
         LeanTween.value(TransitionImage.gameObject, UpdateTransitionColor, new Color(0, 0, 0, 1), new Color(1, 1, 1, 1), 1f);
@@ -116,7 +106,6 @@ public class PlayerController : MonoBehaviour
         yield return new WaitForSeconds(6f);
 
         LeanTween.value(TransitionCaptionText.gameObject, UpdateCaptionColor, new Color(1, 1, 1, 1), new Color(1, 1, 1, 0), 2f);
-        LeanTween.value(CrosshairImage.gameObject, UpdateCrosshaircolor, new Color(1, 1, 1, 0), new Color(1, 1, 1, 1), 0.5f);
 
         yield return new WaitForSeconds(1f);
 
@@ -152,18 +141,21 @@ public class PlayerController : MonoBehaviour
         }
 
         _Controller.Move(_current_velocity * CharacterMovementSpeed * Time.deltaTime);
+
+        if (!Application.isMobilePlatform)
+        {
+            /*MouseX += Input.GetAxis("Mouse X") * 2;
+            MouseY -= Input.GetAxis("Mouse Y") * 2;
+
+            transform.eulerAngles = new Vector3(MouseY, MouseX, 0);
+            transform.SetLocalPositionAndRotation(new Vector3(), transform.rotation*);*/
+
+            transform.Rotate(0, 0.25f, 0, Space.Self);
+        }
     }
 
     public void Update()
     {
-        if (!Application.isMobilePlatform)
-        {
-            MouseX += Input.GetAxis("Mouse X") * 2;
-            MouseY -= Input.GetAxis("Mouse Y") * 2;
-
-            transform.eulerAngles = new Vector3(MouseY, MouseX, 0);
-            transform.SetLocalPositionAndRotation(new Vector3(), transform.rotation);
-        }
 
         // Raycast para interagir com os objetos da cena
         ObjectInteractionHandler GazedObjectController = RaycastInteractableObject();
@@ -178,18 +170,6 @@ public class PlayerController : MonoBehaviour
             //SendMessage(_currentObject, "OnPointerEnter");
 
             _currentObjectController = GazedObjectController;
-        }
-
-        if (_currentObjectController != null)
-        {
-            if (CrosshairImage != null) CrosshairImage.color = CrosshairGazedColor;
-
-            if (_isInputActive) _currentObjectController.OnPointerClick();
-            //SendMessage(_currentObject, "OnPointerClick");
-        }
-        else
-        {
-            if (CrosshairImage != null) CrosshairImage.color = CrosshairDefaultColor;
         }
 
         if (Application.isMobilePlatform)
