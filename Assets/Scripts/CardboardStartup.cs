@@ -16,6 +16,8 @@ public class CardboardStartup : MonoBehaviour
     public string CurrentSceneCaption = "";
     public string NextSceneName = "";
 
+    private float time_left = 0f;
+
     public void Start()
     {
         Screen.sleepTimeout = SleepTimeout.NeverSleep;
@@ -40,6 +42,14 @@ public class CardboardStartup : MonoBehaviour
         var listener = gameObject.GetComponent<AudioListener>();
         if (listener == null) listener = gameObject.AddComponent<AudioListener>();
 
+        // get sound length
+        float final_time = 0f;
+        foreach (var Sound in SoundsParent.GetComponentsInChildren<AudioSource>())
+        {
+            final_time += Sound.clip.length;
+        }
+        time_left = final_time;
+
         foreach (var Sound in SoundsParent.GetComponentsInChildren<AudioSource>())
         {
             Sound.Play();
@@ -58,25 +68,45 @@ public class CardboardStartup : MonoBehaviour
         }
     }
 
+    void UpdateTimer(float currentTime)
+    {
+        currentTime += 1;
+        float minutes = Mathf.FloorToInt(currentTime / 60);
+        float seconds = Mathf.FloorToInt(currentTime % 60);
+
+        UserSettings.TimerText = string.Format("{0:00}:{1:00}", minutes, seconds);
+    }
+
     public void Update()
     {
-        if (!Application.isMobilePlatform) return;
-
-        if (Api.IsCloseButtonPressed)
+        time_left -= Time.deltaTime;
+        if (time_left > 0)
         {
-            Application.Quit();
+            UpdateTimer(time_left);
+        }
+        else
+        {
+            UserSettings.TimerText = "";
         }
 
-        if (Api.IsTriggerHeldPressed)
+        if (Application.isMobilePlatform && UserSettings.VR_Enabled)
         {
-            Api.Recenter();
-        }
+            if (Api.IsCloseButtonPressed)
+            {
+                Application.Quit();
+            }
 
-        if (Api.HasNewDeviceParams())
-        {
-            Api.ReloadDeviceParams();
-        }
+            if (Api.IsTriggerHeldPressed)
+            {
+                Api.Recenter();
+            }
 
-        Api.UpdateScreenParams();
+            if (Api.HasNewDeviceParams())
+            {
+                Api.ReloadDeviceParams();
+            }
+
+            Api.UpdateScreenParams();
+        };
     }
 }

@@ -27,6 +27,8 @@ public class UserSettings : MonoBehaviour
     public static Vector3 PlayerStartingPosition = new Vector3(0, 1, 0);
     public static PlayerController CurrentPlayerController;
 
+    public static string TimerText = "";
+
     public static UnityEvent TransitionEnded = new UnityEvent();
     public static UnityEvent FadeoutScreen = new UnityEvent();
 }

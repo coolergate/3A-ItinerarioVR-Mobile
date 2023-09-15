@@ -16,15 +16,18 @@ public class PlayerController : MonoBehaviour
 
     [Header("Properties")]
     public float CharacterMovementSpeed = 10.0f;
-    public float MouseSensitivity = 2.0f;
-    private float MouseX = 0.0f, MouseY = 0.0f;
+    public float CameraSensitivity = 2.0f;
+    private float CameraX = 0.0f, CameraY = 0.0f;
 
     [Space(20)]
     public Image TransitionImage;
     public TextMeshProUGUI TransitionCaptionText;
+    public TextMeshProUGUI TimerText;
 
-    [Header("Properties")]
+    [Space(20)]
     public AudioSource TransitionAudio;
+    public FixedJoystick MovementJoystickHandler;
+    public FixedJoystick CameraJoystickHandler;
 
     private ObjectInteractionHandler _currentObjectController;
     private Vector3 _current_velocity = new Vector3();
@@ -53,9 +56,6 @@ public class PlayerController : MonoBehaviour
 
         Screen.sleepTimeout = SleepTimeout.NeverSleep;
         Screen.brightness = 1.0f;
-
-        Cursor.visible = true;
-        Cursor.lockState = CursorLockMode.Locked;
 
         _Controller = GetComponentInParent<CharacterController>();
 
@@ -128,13 +128,13 @@ public class PlayerController : MonoBehaviour
     {
         if (_Controller == null || !MovementEnabled) return;
 
+        // movement
         if (Camera.main != null)
         {
-            float Horizontal = Input.GetAxis("Horizontal");
-            float Vertical = Input.GetAxis("Vertical");
+            Vector2 MovementInput = MovementJoystickHandler.Direction;
 
             Transform Orientation = Camera.main.transform;
-            Vector3 Direction = Orientation.forward * Vertical + Orientation.right * Horizontal;
+            Vector3 Direction = Orientation.forward * MovementInput.y + Orientation.right * MovementInput.x;
             Direction.y = -0.25f;
 
             _current_velocity = Vector3.Lerp(_current_velocity, Direction, 0.125f);
@@ -142,41 +142,28 @@ public class PlayerController : MonoBehaviour
 
         _Controller.Move(_current_velocity * CharacterMovementSpeed * Time.deltaTime);
 
-        if (!Application.isMobilePlatform)
+        if (!_isVrModeEnabled)
         {
-            /*MouseX += Input.GetAxis("Mouse X") * 2;
-            MouseY -= Input.GetAxis("Mouse Y") * 2;
+            Vector2 CameraInput = CameraJoystickHandler.Direction * CameraSensitivity;
+            CameraX += CameraInput.x;
+            CameraY -= CameraInput.y;
 
-            transform.eulerAngles = new Vector3(MouseY, MouseX, 0);
-            transform.SetLocalPositionAndRotation(new Vector3(), transform.rotation*);*/
-
-            transform.Rotate(0, 0.25f, 0, Space.Self);
+            transform.eulerAngles = new Vector3(CameraY, CameraX, 0);
+            transform.SetLocalPositionAndRotation(new Vector3(), transform.rotation);
         }
     }
 
     public void Update()
     {
-
-        // Raycast para interagir com os objetos da cena
-        ObjectInteractionHandler GazedObjectController = RaycastInteractableObject();
-
-        if (GazedObjectController != _currentObjectController)
-        {
-            if (_currentObjectController != null) _currentObjectController.OnPointerExit();
-            //SendMessage(_currentObject, "OnPointerExit");
-
-
-            if (GazedObjectController) GazedObjectController.OnPointerEnter();
-            //SendMessage(_currentObject, "OnPointerEnter");
-
-            _currentObjectController = GazedObjectController;
-        }
-
         if (Application.isMobilePlatform)
         {
             if (!_isVrModeEnabled) EnterVR();
             else Api.UpdateScreenParams();
         }
+
+        TimerText.text = UserSettings.TimerText;
+
+        if (Input.GetButton("Exit")) Application.Quit();
     }
 
     private void EnterVR()
@@ -219,27 +206,6 @@ public class PlayerController : MonoBehaviour
 
         _Camera.ResetAspect();
         _Camera.fieldOfView = _defaultFieldOfView;
-    }
-
-    private void SendMessage(GameObject Object, string Message)
-    {
-        Object.SendMessage(Message, null, SendMessageOptions.DontRequireReceiver);
-    }
-
-    ObjectInteractionHandler RaycastInteractableObject()
-    {
-        RaycastHit hit;
-        bool success_raycast = Physics.Raycast(transform.position, transform.forward, out hit, Mathf.Infinity);
-
-        if (success_raycast)
-        {
-            GameObject GazedObject = hit.transform.gameObject;
-            ObjectInteractionHandler GazedObjectController = GazedObject.GetComponent<ObjectInteractionHandler>();
-
-            if (GazedObjectController != null) return GazedObjectController;
-        }
-
-        return null;
     }
 
     public IEnumerator PlayAudios(GameObject parent)
